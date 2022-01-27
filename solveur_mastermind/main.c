@@ -16,7 +16,7 @@ code_t possibilites[1024];
 
 int main(){
     uint32_t i;
-    /* génération du code aléatoire */
+    /* g�n�ration du code al�atoire */
     srand( time(NULL));
     code.pos1 = rand() % 5;
     code.pos2 = rand() % 5;
@@ -54,7 +54,17 @@ int main(){
         } else {
             possibilites[i].pos1 += 1;
         }
-        printf("possibilité n°%d = %d;%d;%d;%d\n",i,possibilites[i].pos1,possibilites[i].pos2,possibilites[i].pos3,possibilites[i].pos4);
+        printf("possibilite %lu = %d;%d;%d;%d\n",i,possibilites[i].pos1,possibilites[i].pos2,possibilites[i].pos3,possibilites[i].pos4);
     }
     /* fin */
+
+    /* etape 3 */
+    /*  tester 1122 puis selon les resultat obtenue tester tout les autres codes et verifier qu'ils donnerait
+    *   ce resultat si ils etait le code :
+    *   ex Pour 1122 si le resultat obtenue est : R,B,*,*
+    *   alors il est impossible que le code soit 1111 car le resultat obtenue serait R,R,*,*
+    */
+    /* fin */
+
+    /* suite */
 }
