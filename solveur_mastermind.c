@@ -16,7 +16,7 @@ code_t possibilites[1024];
 
 int main(){
     uint32_t i;
-    /* génération du code aléatoire */
+    /* gÃ©nÃ©ration du code alÃ©atoire */
     srand( time(NULL));
     code.pos1 = rand() % 5;
     code.pos2 = rand() % 5;
@@ -54,7 +54,7 @@ int main(){
         } else {
             possibilites[i].pos1 += 1;
         }
-        printf("possibilité n°%d = %d;%d;%d;%d\n",i,possibilites[i].pos1,possibilites[i].pos2,possibilites[i].pos3,possibilites[i].pos4);
+        printf("possibilitÃ© nÂ°%d = %d;%d;%d;%d\n",i,possibilites[i].pos1,possibilites[i].pos2,possibilites[i].pos3,possibilites[i].pos4);
     }
     /* fin */
 }
