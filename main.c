@@ -19,12 +19,12 @@ typedef enum ETAT{
 
 ETAT_T Next_State(ETAT_T CurrentState)           //Transition between the states
 {
-    ETAT_T Next_State;
+    ETAT_T Next_State = Current_State;
     switch(CurrentState){
         case INIT:
             Next_State = TOUR_N;
             break;
-        case TOUT_N:
+        case TOUR_N:
             if (N>12){
                 Next_State = TOUR_CHECK;
             }
