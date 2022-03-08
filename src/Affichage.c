@@ -9,6 +9,7 @@
 SDL_Window *fenetre = NULL;
 //rendue
 SDL_Renderer *rendue = NULL;
+SDL_Renderer *rendueDeplacement = NULL;
 //surface
 SDL_Surface *image = NULL;
 //textures
@@ -36,6 +37,7 @@ SDL_Texture *T_rejouer = NULL;
 //rectangles pour textures
 SDL_Rect Rect_Fond;
 SDL_Rect Rect_Texte;
+SDL_Rect Rect_cercleDeplacement;
 SDL_Rect Rect_Code[4];
 SDL_Rect Rect_Flag[4];
 SDL_Rect Rect_Tour[4];
@@ -179,11 +181,12 @@ void SetUpRectangles(void){
         if (SDL_QueryTexture(Flag_R, NULL, NULL, &Rect_Flag[i].w, &Rect_Flag[i].h) != 0) ExitErreurSDL("Chargement Rectangle de flag");
         Rect_Flag[i].x = colonnes[5+i];
         //cercle
-        if (SDL_QueryTexture(cercleB, NULL, NULL, &Rect_Tour[i].w, &Rect_Tour[i].h) != 0) ExitErreurSDL("Chargement Rectangle de flag");
+        if (SDL_QueryTexture(cercleB, NULL, NULL, &Rect_Tour[i].w, &Rect_Tour[i].h) != 0) ExitErreurSDL("Chargement Rectangle de cercle");
         Rect_Tour[i].x = colonnes[1+i];
     }
+    if (SDL_QueryTexture(cercleB, NULL, NULL, &Rect_cercleDeplacement.w, &Rect_cercleDeplacement.h) != 0) ExitErreurSDL("Chargement Rectangle de cercle");
     //texte
-    if (SDL_QueryTexture(T_continuer, NULL, NULL, &Rect_Texte.w, &Rect_Texte.h) != 0) ExitErreurSDL("Chargement Rectangle de flag");
+    if (SDL_QueryTexture(T_continuer, NULL, NULL, &Rect_Texte.w, &Rect_Texte.h) != 0) ExitErreurSDL("Chargement Rectangle de texte");
     Rect_Texte.y = TextY;
     Rect_Texte.x = TextX;
 }
@@ -223,6 +226,15 @@ unsigned char RecupTouche_B_SDL(void){
                 else if((event.button.x >= colonnes[0])&&(event.button.y >= lignes[3])&&(event.button.x <= (colonnes[0] + Rect_Code[3].w))&&(event.button.y <= (lignes[3] + Rect_Code[3].h))) return appuie_code4;
                 else if((event.button.x >= 733)&&(event.button.y >= 532)&&(event.button.x <= 834)&&(event.button.y <= 586)) return t_entree;
                 else return appuie;
+                break;
+            case SDL_MOUSEMOTION:
+                rendueDeplacement = rendue;
+                if (!rendueDeplacement) ExitErreurSDL("rendueDeplacement");
+                Rect_cercleDeplacement.x = event.motion.x - (Rect_cercleDeplacement.w / 2);
+                Rect_cercleDeplacement.y = event.motion.y - (Rect_cercleDeplacement.h / 2);
+                SDL_RenderCopy(rendueDeplacement, cercleB, NULL, &Rect_cercleDeplacement);
+                SDL_RenderPresent(rendueDeplacement);
+                SDL_RenderClear(rendueDeplacement);
                 break;
             default:
                 break;
