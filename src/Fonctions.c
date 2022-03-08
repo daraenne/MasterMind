@@ -5,12 +5,14 @@
 #include <Define.h>
 
 unsigned char test_valid(unsigned char test[], unsigned char code[]){
+    printf("test valid\n");
     unsigned char flags, code_val[4], test_val[4], r_flag = 0, w_flag = 0;
     for (unsigned char i=0;i<4;i++)
         code_val[i] = code[i];
     for (unsigned char i=0;i<4;i++)
         test_val[i] = test[i];
 
+    printf("flag rouge\n");
     /* calcul flag rouge (bonne couleur bonne position) */
     for (unsigned char i=0;i<4;i++){
         if (test_val[i] == code_val[i]){
@@ -19,6 +21,8 @@ unsigned char test_valid(unsigned char test[], unsigned char code[]){
             r_flag++;
         }
     }
+
+    printf("flag blanc\n");
     /* calcul flag blanc (bonne couleur mais mauvaise position)*/
     for (unsigned char i=0;i<4;i++){
         for (unsigned char j=0;j<4;j++){
@@ -40,6 +44,7 @@ unsigned char test_valid(unsigned char test[], unsigned char code[]){
 
 
 void test_correspondance(unsigned char flags, unsigned char tour[], code_t possibilites[]){
+    printf("correspondance\n");
     unsigned char code_simule[4], tour_val[4];
     for (unsigned char i=0;i<4;i++){tour_val[i] = tour[i];}
     for (unsigned long i=0;i<625;i++){

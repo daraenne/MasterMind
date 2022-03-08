@@ -7,6 +7,7 @@
 
 //fenetre
 SDL_Window *fenetre = NULL;
+SDL_Texture *screenshot = NULL;
 //rendue
 SDL_Renderer *rendue = NULL;
 SDL_Renderer *rendueDeplacement = NULL;
@@ -38,6 +39,7 @@ SDL_Texture *T_rejouer = NULL;
 SDL_Rect Rect_Fond;
 SDL_Rect Rect_Texte;
 SDL_Rect Rect_cercleDeplacement;
+SDL_Rect Rect_Screenshot;
 SDL_Rect Rect_Code[4];
 SDL_Rect Rect_Flag[4];
 SDL_Rect Rect_Tour[4];
@@ -48,9 +50,12 @@ uint16_t colonnes[9];
 SDL_Event event;
 
 void InitSDL(void){
+    printf("init SDL\n");
     if (SDL_Init(SDL_INIT_VIDEO) != 0) ExitErreurSDL("Init");
+    printf("crea window\n")
     fenetre = SDL_CreateWindow("Jeux du MasterMind", 2, 30, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
     if (!fenetre) ExitErreurSDL("creation de fenetre");
+    printf("crea rendue\n");
     rendue = SDL_CreateRenderer(fenetre, -1, SDL_RENDERER_ACCELERATED);
     if (!rendue) ExitErreurSDL("creation rendue");
     SDL_RenderPresent(rendue);
@@ -61,26 +66,31 @@ void InitSDL(void){
 }
 
 void ExitSDL(void){
+    printf("exit SDL\n");
     SDL_RenderClear(rendue);
     SDL_DestroyWindow(fenetre);
     SDL_Quit();
 }
 
 void ExitErreurSDL(const char* location){
+    printf("erreur SDL\n");
     SDL_Log("ERREUR :%s > %s\n", location, SDL_GetError());
     ExitSDL();
     exit(EXIT_FAILURE);
 }
 
 void affichage(void){
+    printf("affichage\n");
     SDL_RenderCopy(rendue, Fond, NULL, &Rect_Fond);
     SDL_RenderPresent(rendue);
 }
 
 void affichageImage(choixImage_t choix, unsigned char tab[], unsigned char NumeroTour){
+    printf("affichage image\n");
     unsigned char i=0, flagR=(tab[NumeroTour-1] & 0x0F), flagW=(tab[NumeroTour-1] >> 4);
     switch(choix){
         case AF_code:
+            printf("affichage code\n");
             for(i=0;i<4;i++){
                 switch (tab[i]){
                     case 0:
@@ -102,6 +112,7 @@ void affichageImage(choixImage_t choix, unsigned char tab[], unsigned char Numer
             }
             break;
         case flag:
+            printf("affichage flag\n");
             i=0;
             for(char j=0;j<flagR;j++){
                 Rect_Flag[i].y = lignes[NumeroTour-1];
@@ -114,6 +125,7 @@ void affichageImage(choixImage_t choix, unsigned char tab[], unsigned char Numer
             }
             break;
         case AF_tour:
+            printf("affichage jeu\n");
             for(i=0;i<4;i++){
                 Rect_Tour[i].y = lignes[NumeroTour-1];
                 switch(tab[i]){
@@ -136,6 +148,7 @@ void affichageImage(choixImage_t choix, unsigned char tab[], unsigned char Numer
             }
             break;
         case texte:
+            printf("affichage texte\n");
             switch(tab[0]){
                 case txt_continuer:
                     SDL_RenderCopy(rendue, T_continuer, NULL, &Rect_Texte);
@@ -168,6 +181,7 @@ void affichageImage(choixImage_t choix, unsigned char tab[], unsigned char Numer
 }
 
 void SetUpRectangles(void){
+    printf("setup rectangles\n");
     //fond
     if (SDL_QueryTexture(Fond, NULL, NULL, &Rect_Fond.w, &Rect_Fond.h) != 0) ExitErreurSDL("Chargement fond");
     Rect_Fond.x = 0;
@@ -192,13 +206,16 @@ void SetUpRectangles(void){
 }
 
 unsigned char RecupTouche_B_SDL(void){
+    printf("recup touche\n");
     while(SDL_WaitEvent(&event)){
         switch(event.type){
             case SDL_QUIT:
+                printf("SDL quit\n");
                 ExitSDL();
                 exit(EXIT_SUCCESS);
                 break;
             case SDL_KEYDOWN:
+                printf("appuie touche\n");
                 switch(event.key.keysym.sym){
                     case SDLK_RIGHT:
                         return t_droite;
@@ -218,6 +235,7 @@ unsigned char RecupTouche_B_SDL(void){
                 }
                 break;
             case SDL_MOUSEBUTTONDOWN:
+                printf("appuie souris\n");
                 if((event.button.x >= 350)&&(event.button.y >= 550)&&(event.button.x <= 480)&&(event.button.y <= 580)) return appuie_texteG;
                 else if((event.button.x >= 530)&&(event.button.y >= 550)&&(event.button.x <= 650)&&(event.button.y <= 580)) return appuie_texteD;
                 else if((event.button.x >= colonnes[0])&&(event.button.y >= lignes[0])&&(event.button.x <= (colonnes[0] + Rect_Code[0].w))&&(event.button.y <= (lignes[0] + Rect_Code[0].h))) return appuie_code1;
@@ -225,16 +243,35 @@ unsigned char RecupTouche_B_SDL(void){
                 else if((event.button.x >= colonnes[0])&&(event.button.y >= lignes[2])&&(event.button.x <= (colonnes[0] + Rect_Code[2].w))&&(event.button.y <= (lignes[2] + Rect_Code[2].h))) return appuie_code3;
                 else if((event.button.x >= colonnes[0])&&(event.button.y >= lignes[3])&&(event.button.x <= (colonnes[0] + Rect_Code[3].w))&&(event.button.y <= (lignes[3] + Rect_Code[3].h))) return appuie_code4;
                 else if((event.button.x >= 733)&&(event.button.y >= 532)&&(event.button.x <= 834)&&(event.button.y <= 586)) return t_entree;
-                else return appuie;
-                break;
-            case SDL_MOUSEMOTION:
-                rendueDeplacement = rendue;
-                if (!rendueDeplacement) ExitErreurSDL("rendueDeplacement");
-                Rect_cercleDeplacement.x = event.motion.x - (Rect_cercleDeplacement.w / 2);
-                Rect_cercleDeplacement.y = event.motion.y - (Rect_cercleDeplacement.h / 2);
-                SDL_RenderCopy(rendueDeplacement, cercleB, NULL, &Rect_cercleDeplacement);
-                SDL_RenderPresent(rendueDeplacement);
-                SDL_RenderClear(rendueDeplacement);
+                else {
+                    rendueDeplacement = SDL_GetRenderer(fenetre);
+                    Rect_cercleDeplacement.x = event.motion.x - (Rect_cercleDeplacement.w / 2);
+                    Rect_cercleDeplacement.y = event.motion.y - (Rect_cercleDeplacement.h / 2);
+                    SDL_RenderCopy(rendueDeplacement, cercleB, NULL, &Rect_cercleDeplacement);
+                    SDL_RenderPresent(rendueDeplacement);
+                    SDL_RenderClear(rendueDeplacement);
+                    SDL_RenderPresent(rendue);
+
+
+
+
+                    /*
+                    SDL_SaveBMP(SDL_GetWindowSurface(fenetre), "img/save/screenshot.bmp");
+                    Rect_cercleDeplacement.x = event.motion.x - (Rect_cercleDeplacement.w / 2);
+                    Rect_cercleDeplacement.y = event.motion.y - (Rect_cercleDeplacement.h / 2);
+                    SDL_RenderCopy(rendue, cercleB, NULL, &Rect_cercleDeplacement);
+                    SDL_RenderPresent(rendue);
+                    image = SDL_LoadBMP("img/save/screenshot.bmp");
+                    if (!image) ExitErreurSDL("recup de screenshot.bmp");
+                    screenshot = SDL_CreateTextureFromSurface(rendue, image);
+                    SDL_FreeSurface(image);
+                    if (SDL_QueryTexture(screenshot, NULL, NULL, &Rect_Screenshot.w, &Rect_Screenshot.h) != 0) ExitErreurSDL("Chargement Rectangle du screenshot");
+                    Rect_Screenshot.y = 0;
+                    Rect_Screenshot.x = 0;
+                    SDL_RenderCopy(rendue, screenshot, NULL, &Rect_Screenshot);
+                    SDL_RenderPresent(rendue);*/
+                    return appuie;
+                }
                 break;
             default:
                 break;
@@ -243,6 +280,7 @@ unsigned char RecupTouche_B_SDL(void){
 }
 
 void SetUpPositions(void){
+    printf("setup positions\n");
     lignes[0] = 114;
     lignes[1] = lignes[0]+32;
     lignes[2] = lignes[1]+32;
@@ -267,6 +305,7 @@ void SetUpPositions(void){
 }
 
 void CreationTexture(void){
+    printf("crea texture\n");
     //cercles
     image = SDL_LoadBMP("img/Cercles/Cercle_Couleur_B.bmp");
     if (!image) ExitErreurSDL("creation de Cercle_Couleur_B");

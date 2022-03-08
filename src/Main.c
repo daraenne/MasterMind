@@ -15,7 +15,7 @@
 int main(int argc,char **argv){
     InitSDL();
     Etat_t etat_courant = Init;
-
+    printf("entre dans boucle infini\n");
     while(1){
         Current_State(etat_courant);
         etat_courant = Next_State(etat_courant);

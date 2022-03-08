@@ -11,7 +11,8 @@
 
 code_t possibilites[625];
 code_t tour_passe[12];
-unsigned char getter, NumeroTour, flag_bon, retry, bool_victoire, flag_tour[12], tour[4], code[4], choix_text[1];
+unsigned char resol, getter, NumeroTour, flag_bon, retry, bool_victoire;
+unsigned char flag_tour[12], tour[4], code[4], choix_text[1];
 
 Etat_t Next_State(Etat_t CurrentState){
     Etat_t Next_State = CurrentState;
@@ -58,149 +59,195 @@ Etat_t Next_State(Etat_t CurrentState){
 }
 
 void Current_State(Etat_t etat_courant){
+    printf("current state\n");
     unsigned char while_bool = 1, gen;
     switch(etat_courant){
         case Init:
-            system("cls"); //clear terminal
+            printf("init\n");
             // mise a 0 du nombre de tour
             NumeroTour = 0;
-            // choix entre generation a la main ou random
-            printf("generation du code : a la main <---> aleatoire\n");
-            printf("a la main\r");
+
+            // choix resolution
+            printf("resolution : auto <----> manuelle\n");
+            printf("auto\r");
             choix_text[0] = txt_gen_man;
             affichageImage(texte, choix_text, NumeroTour);
-            gen = 1;
+            resol = 1;
             while(while_bool){
                 getter = RecupTouche_B_SDL();
-                switch (getter){
+                switch(getter){
                     case t_entree:
                         while_bool = 0;
                         break;
-                    case t_droite:
-                        printf("aleatoire\r");
+                    case t_droite :
+                        printf("auto    \r");
                         choix_text[0] = txt_gen_rand;
                         affichageImage(texte, choix_text, NumeroTour);
-                        gen = 0;
+                        resol = 1;
                         break;
-                    case appuie_texteD:
-                        printf("aleatoire\r");
+                    case appuie_texteD :
+                        printf("auto    \r");
                         choix_text[0] = txt_gen_rand;
                         affichageImage(texte, choix_text, NumeroTour);
-                        gen = 0;
+                        resol = 1;
                         break;
-                    case t_gauche:
-                        printf("a la main\r");
+                    case t_gauche :
+                        printf("manuelle\r")
                         choix_text[0] = txt_gen_man;
                         affichageImage(texte, choix_text, NumeroTour);
-                        gen = 1;
+                        resol = 0;
                         break;
-                    case appuie_texteG:
-                        printf("a la main\r");
+                    case appuie_texteG :
+                        printf("manuelle\r")
                         choix_text[0] = txt_gen_man;
                         affichageImage(texte, choix_text, NumeroTour);
-                        gen = 1;
+                        resol = 0;
+                        break;
+                    default:
                         break;
                 }
-            } while_bool = 1;
-            // generation du code
-            if(gen){
-                //on s'assure que le code soit initialiser correctement
-                for(char i=0;i<4;i++) code[i] = 0;
-                affichageImage(AF_code, code, NumeroTour);
-                do{
-                    // generation du code
+            }while_bool = 1;
+
+            if(resol){
+                // choix entre generation a la main ou random
+                printf("generation du code : a la main <---> aleatoire\n");
+                printf("a la main\r");
+                choix_text[0] = txt_gen_man;
+                affichageImage(texte, choix_text, NumeroTour);
+                gen = 1;
+                while(while_bool){
                     getter = RecupTouche_B_SDL();
-                    switch(getter){
-                        case appuie_code1:
-                            code[0]++;
-                            if(code[0]==5) code[0] = 0;
-                            printf("pos 1 = %d\n", code[0]);
-                            affichageImage(AF_code, code, NumeroTour);
+                    switch (getter){
+                        case t_entree:
+                            while_bool = 0;
                             break;
-                        case appuie_code2:
-                            code[1]++;
-                            if(code[1]==5) code[1] = 0;
-                            printf("pos 2 = %d\n", code[1]);
-                            affichageImage(AF_code, code, NumeroTour);
+                        case t_droite:
+                            printf("aleatoire\r");
+                            choix_text[0] = txt_gen_rand;
+                            affichageImage(texte, choix_text, NumeroTour);
+                            gen = 0;
                             break;
-                        case appuie_code3:
-                            code[2]++;
-                            if(code[2]==5) code[2] = 0;
-                            printf("pos 3 = %d\n", code[2]);
-                            affichageImage(AF_code, code, NumeroTour);
+                        case appuie_texteD:
+                            printf("aleatoire\r");
+                            choix_text[0] = txt_gen_rand;
+                            affichageImage(texte, choix_text, NumeroTour);
+                            gen = 0;
                             break;
-                        case appuie_code4:
-                            code[3]++;
-                            if(code[3]==5) code[3] = 0;
-                            printf("pos 4 = %d\n", code[3]);
-                            affichageImage(AF_code, code, NumeroTour);
+                        case t_gauche:
+                            printf("a la main\r");
+                            choix_text[0] = txt_gen_man;
+                            affichageImage(texte, choix_text, NumeroTour);
+                            gen = 1;
+                            break;
+                        case appuie_texteG:
+                            printf("a la main\r");
+                            choix_text[0] = txt_gen_man;
+                            affichageImage(texte, choix_text, NumeroTour);
+                            gen = 1;
                             break;
                     }
-                }while(getter != t_entree);
-                // affichage du code
-                printf("code :");
-                for(unsigned char i=0;i<4;i++)printf("%d",code[i]);
-                printf("\n");
-            }else{
-                while(while_bool){
-                    // generation random
-                    srand(time(NULL));
-                    for(unsigned char i=0;i<4;i++)code[i] = rand()%5;
+                } while_bool = 1;
+                // generation du code
+                if(gen){
+                    //on s'assure que le code soit initialiser correctement
+                    for(char i=0;i<4;i++) code[i] = 0;
+                    affichageImage(AF_code, code, NumeroTour);
+                    do{
+                        // generation du code
+                        getter = RecupTouche_B_SDL();
+                        switch(getter){
+                            case appuie_code1:
+                                code[0]++;
+                                if(code[0]==5) code[0] = 0;
+                                printf("pos 1 = %d\n", code[0]);
+                                affichageImage(AF_code, code, NumeroTour);
+                                break;
+                            case appuie_code2:
+                                code[1]++;
+                                if(code[1]==5) code[1] = 0;
+                                printf("pos 2 = %d\n", code[1]);
+                                affichageImage(AF_code, code, NumeroTour);
+                                break;
+                            case appuie_code3:
+                                code[2]++;
+                                if(code[2]==5) code[2] = 0;
+                                printf("pos 3 = %d\n", code[2]);
+                                affichageImage(AF_code, code, NumeroTour);
+                                break;
+                            case appuie_code4:
+                                code[3]++;
+                                if(code[3]==5) code[3] = 0;
+                                printf("pos 4 = %d\n", code[3]);
+                                affichageImage(AF_code, code, NumeroTour);
+                                break;
+                        }
+                    }while(getter != t_entree);
                     // affichage du code
                     printf("code :");
-                    affichageImage(AF_code, code, NumeroTour);
                     for(unsigned char i=0;i<4;i++)printf("%d",code[i]);
                     printf("\n");
-                    printf("relancer ? (oui <-----> non)\n");
-                    while_bool = 0;
-                    printf("non\r");
-                    choix_text[0] = txt_gen_rand_Non;
-                    affichageImage(texte, choix_text, NumeroTour);
-                    while(1){
-                        getter = RecupTouche_B_SDL();
-                        if((getter == t_droite)||(getter == appuie_texteD)){
-                            while_bool = 0;
-                            printf("non\r");
-                            choix_text[0] = txt_gen_rand_Non;
-                            affichageImage(texte, choix_text, NumeroTour);
+                }else{
+                    while(while_bool){
+                        // generation random
+                        srand(time(NULL));
+                        for(unsigned char i=0;i<4;i++)code[i] = rand()%5;
+                        // affichage du code
+                        printf("code :");
+                        affichageImage(AF_code, code, NumeroTour);
+                        for(unsigned char i=0;i<4;i++)printf("%d",code[i]);
+                        printf("\n");
+                        printf("relancer ? (oui <-----> non)\n");
+                        while_bool = 0;
+                        printf("non\r");
+                        choix_text[0] = txt_gen_rand_Non;
+                        affichageImage(texte, choix_text, NumeroTour);
+                        while(1){
+                            getter = RecupTouche_B_SDL();
+                            if((getter == t_droite)||(getter == appuie_texteD)){
+                                while_bool = 0;
+                                printf("non\r");
+                                choix_text[0] = txt_gen_rand_Non;
+                                affichageImage(texte, choix_text, NumeroTour);
+                            }
+                            if((getter == t_gauche)||(getter == appuie_texteG)) {
+                                while_bool = 1;
+                                printf("oui\r");
+                                choix_text[0] = txt_gen_rand_Oui;
+                                affichageImage(texte, choix_text, NumeroTour);
+                            }
+                            if(getter == t_entree) break;
                         }
-                        if((getter == t_gauche)||(getter == appuie_texteG)) {
-                            while_bool = 1;
-                            printf("oui\r");
-                            choix_text[0] = txt_gen_rand_Oui;
-                            affichageImage(texte, choix_text, NumeroTour);
-                        }
-                        if(getter == t_entree) break;
-                    }
-                    printf("       \r");
-                }while_bool = 1;
+                        printf("       \r");
+                    }while_bool = 1;
+                }
+                // generation d'un tableau vide (clear d'une possible partie precedente)
+                possibilites[0].pos1=0;
+                possibilites[0].pos2=0;
+                possibilites[0].pos3=0;
+                possibilites[0].pos4=0;
+                // mise de toutes les differentes valeurs possibles dans le tableau
+                for (unsigned long i=1;i<625;i++){
+                    possibilites[i] = possibilites[i-1];
+                    if (possibilites[i].pos1 == 4){
+                        possibilites[i].pos1 = 0;
+
+                        if (possibilites[i].pos2 == 4){
+                            possibilites[i].pos2 = 0;
+
+                            if (possibilites[i].pos3 == 4){
+                                possibilites[i].pos3 = 0;
+
+                                if (possibilites[i].pos4 == 4){
+                                    break;
+                                } else {possibilites[i].pos4 ++;}
+                            } else {possibilites[i].pos3 ++;}
+                        } else {possibilites[i].pos2 ++;}
+                    } else {possibilites[i].pos1 ++;}
+                }
+                break;
+            } else {
+                
             }
-            // generation d'un tableau vide (clear d'une possible partie precedente)
-            possibilites[0].pos1=0;
-            possibilites[0].pos2=0;
-            possibilites[0].pos3=0;
-            possibilites[0].pos4=0;
-            // mise de toutes les differentes valeurs possibles dans le tableau
-            for (unsigned long i=1;i<625;i++){
-                possibilites[i] = possibilites[i-1];
-                if (possibilites[i].pos1 == 4){
-                    possibilites[i].pos1 = 0;
-
-                    if (possibilites[i].pos2 == 4){
-                        possibilites[i].pos2 = 0;
-
-                        if (possibilites[i].pos3 == 4){
-                            possibilites[i].pos3 = 0;
-
-                            if (possibilites[i].pos4 == 4){
-                                break;
-                            } else {possibilites[i].pos4 ++;}
-                        } else {possibilites[i].pos3 ++;}
-                    } else {possibilites[i].pos2 ++;}
-                } else {possibilites[i].pos1 ++;}
-            }
-            break;
-
         case Tour:
             NumeroTour += 1;
             flag_bon = 0;
