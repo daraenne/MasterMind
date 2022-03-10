@@ -81,14 +81,64 @@ void Current_State(Etat_t etat_courant){
             //init ecran
             etape_affichage = 0;
             affichage();
+
             // mise a 0 du nombre de tour
             NumeroTour = 0;
+
+            // choix resolution manuelle ou automatique
+
+            printf("resolution : auto <----> manuelle\n");
+            printf("auto\r");
+            affichage();
+            SDL_Printf("resolution manuelle <> automatique ",1);
+            SDL_Printf("automatique",2);
+            resol = 1;
+
+            while(while_bool){
+                getter = RecupTouche_B_SDL();
+                switch(getter){
+                    case t_entree:
+                        while_bool = 0;
+                        break;
+                    case t_droite :
+                        printf("auto    \r");
+                        affichage();
+                        SDL_Printf("resolution manuelle <> automatique ",1);
+                        SDL_Printf("automatique",2);
+                        resol = 1;
+                        break;
+                    case appuie_texteD :
+                        printf("auto    \r");
+                        affichage();
+                        SDL_Printf("resolution manuelle <> automatique ",1);
+                        SDL_Printf("automatique",2);
+                        resol = 1;
+                        break;
+                    case t_gauche :
+                        printf("manuelle\r");
+                        affichage();
+                        SDL_Printf("resolution manuelle <> automatique ",1);
+                        SDL_Printf("manuelle",2);
+                        resol = 0;
+                        break;
+                    case appuie_texteG :
+                        printf("manuelle\r");
+                        affichage();
+                        SDL_Printf("resolution manuelle <> automatique ",1);
+                        SDL_Printf("manuelle",2);
+                        resol = 0;
+                        break;
+                    default:
+                        break;
+                }
+            }while_bool = 1;
 
             // choix entre generation a la main ou random
             printf("generation du code : a la main <---> aleatoire\n");
             printf("a la main\r");
-            SDL_Printf("generation du code : manuellement <> aleatoirement",0);
-            SDL_Printf("manuellement",1);
+            affichage();
+            SDL_Printf("generation du code : manuellement <> aleatoirement",1);
+            SDL_Printf("manuellement",2);
             gen = 1;
             while(while_bool){
                 getter = RecupTouche_B_SDL();
@@ -99,29 +149,29 @@ void Current_State(Etat_t etat_courant){
                     case t_droite:
                         printf("aleatoire\r");
                         affichage();
-                        SDL_Printf("generation du code : manuellement <> aleatoirement",0);
-                        SDL_Printf("aleatoirement",1);
+                        SDL_Printf("generation du code : manuellement <> aleatoirement",1);
+                        SDL_Printf("aleatoirement",2);
                         gen = 0;
                         break;
                     case appuie_texteD:
                         printf("aleatoire\r");
                         affichage();
-                        SDL_Printf("generation du code : manuellement <> aleatoirement",0);
-                        SDL_Printf("aleatoirement",1);
+                        SDL_Printf("generation du code : manuellement <> aleatoirement",1);
+                        SDL_Printf("aleatoirement",2);
                         gen = 0;
                         break;
                     case t_gauche:
                         printf("a la main\r");
                         affichage();
-                        SDL_Printf("generation du code : manuellement <> aleatoirement",0);
-                        SDL_Printf("manuellement",1);
+                        SDL_Printf("generation du code : manuellement <> aleatoirement",1);
+                        SDL_Printf("manuellement",2);
                         gen = 1;
                         break;
                     case appuie_texteG:
                         printf("a la main\r");
                         affichage();
-                        SDL_Printf("generation du code : manuellement <> aleatoirement",0);
-                        SDL_Printf("manuellement",1);
+                        SDL_Printf("generation du code : manuellement <> aleatoirement",1);
+                        SDL_Printf("manuellement",2);
                         gen = 1;
                         break;
                 }
@@ -180,23 +230,23 @@ void Current_State(Etat_t etat_courant){
                     while_bool = 0;
                     printf("non\r");
                     affichage();
-                    SDL_Printf("regenerer le code : oui <> non",0);
-                    SDL_Printf("non",1);
+                    SDL_Printf("regenerer le code : oui <> non",1);
+                    SDL_Printf("non",2);
                     while(1){
                         getter = RecupTouche_B_SDL();
                         if((getter == t_droite)||(getter == appuie_texteD)){
                             while_bool = 0;
                             printf("non\r");
                             affichage();
-                            SDL_Printf("regenerer le code : oui <> non",0);
-                            SDL_Printf("non",1);
+                            SDL_Printf("regenerer le code : oui <> non",1);
+                            SDL_Printf("non",2);
                         }
                         if((getter == t_gauche)||(getter == appuie_texteG)){
                             while_bool = 1;
                             printf("oui\r");
                             affichage();
-                            SDL_Printf("regenerer le code : oui <> non",0);
-                            SDL_Printf("oui",1);
+                            SDL_Printf("regenerer le code : oui <> non",1);
+                            SDL_Printf("oui",2);
                         }
                         if(getter == t_entree) break;
                     }
@@ -246,10 +296,9 @@ void Current_State(Etat_t etat_courant){
 
             // affichage resultat
             printf("tour %d:",NumeroTour);
-            affichageImage(AF_tour, tour, NumeroTour);
             for(unsigned char i=0;i<4;i++) printf("%d",tour[i]);
             printf("\nflags :%.2x pour le tour %d\n",flag_tour[NumeroTour-1],NumeroTour);
-            affichageImage(flag, flag_tour, NumeroTour);
+            affichage();
 
             break;
     
@@ -269,10 +318,9 @@ void Current_State(Etat_t etat_courant){
                 // affichage resultat etape 2
                 printf("tour %d:",NumeroTour);
                 etape_affichage = 2;
-                affichage();
                 for(unsigned char i=0;i<4;i++) printf("%d",tour[i]);
                 printf("\nflags :%.2x pour le tour 1\n",flag_tour[NumeroTour-1]);
-                affichageImage(flag, flag_tour, NumeroTour);
+                affichage();
             }else{
                 tour_passe[NumeroTour-1].pos1 = tour[0];
                 tour_passe[NumeroTour-1].pos2 = tour[1];
@@ -282,10 +330,9 @@ void Current_State(Etat_t etat_courant){
                 if(flag_tour[NumeroTour-1] == 0x04) flag_bon = 1;
                 // affichage resultat
                 printf("tour %d:",NumeroTour);
-                affichageImage(AF_tour, tour, NumeroTour);
                 for(unsigned char i=0;i<4;i++) printf("%d",tour[i]);
                 printf("\nflags :%.2x pour le tour %d\n",flag_tour[NumeroTour-1],NumeroTour);
-                affichageImage(flag, flag_tour, NumeroTour);
+                affichage();
             }
             break;
 

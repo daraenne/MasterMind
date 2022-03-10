@@ -29,7 +29,7 @@ SDL_Texture *Fond = NULL;
 //textes
 TTF_Font *police = NULL;
 SDL_Color C_Black;
-SDL_Texture *
+SDL_Texture *texte = NULL;
 
 //rectangles pour textures
 SDL_Rect Rect_Fond;
@@ -83,11 +83,10 @@ void affichage(void){
     extern unsigned char flag_tour[12], tour[4], code[4];
     printf("affichage\n");
     SDL_RenderCopy(rendue, Fond, NULL, &Rect_Fond);
-    SDL_RenderPresent(rendue);
     if(etape_affichage > 0){
         printf("affichage code\n");
-        for(i=0;i<4;i++){
-            switch (tab[i]){
+        for(char i=0;i<4;i++){
+            switch (code[i]){
                 case 0:
                     SDL_RenderCopy(rendue, cercleB, NULL, &Rect_Code[i]);
                     break;
@@ -107,8 +106,8 @@ void affichage(void){
         }
     }
     if(etape_affichage > 1){
-        for(unsigned char i=0; i<(i); i++){
-            Rect_Tour[0].y = lignes[NumeroTour-1];
+        for(unsigned char i=0; i<(NumeroTour-1); i++){
+            Rect_Tour[0].y = lignes[i];
             switch(tour_passe[i].pos1){
                 case 0:
                     SDL_RenderCopy(rendue, cercleB, NULL, &Rect_Tour[0]);
@@ -126,7 +125,7 @@ void affichage(void){
                     SDL_RenderCopy(rendue, cercleV, NULL, &Rect_Tour[0]);
                     break;
             }
-            Rect_Tour[1].y = lignes[NumeroTour-1];
+            Rect_Tour[1].y = lignes[i];
             switch(tour_passe[i].pos2){
                 case 0:
                     SDL_RenderCopy(rendue, cercleB, NULL, &Rect_Tour[1]);
@@ -144,7 +143,7 @@ void affichage(void){
                     SDL_RenderCopy(rendue, cercleV, NULL, &Rect_Tour[1]);
                     break;
             }
-            Rect_Tour[2].y = lignes[NumeroTour-1];
+            Rect_Tour[2].y = lignes[i];
             switch(tour_passe[i].pos3){
                 case 0:
                     SDL_RenderCopy(rendue, cercleB, NULL, &Rect_Tour[2]);
@@ -162,7 +161,7 @@ void affichage(void){
                     SDL_RenderCopy(rendue, cercleV, NULL, &Rect_Tour[2]);
                     break;
             }
-            Rect_Tour[3].y = lignes[NumeroTour-1];
+            Rect_Tour[3].y = lignes[i];
             switch(tour_passe[i].pos4){
                 case 0:
                     SDL_RenderCopy(rendue, cercleB, NULL, &Rect_Tour[3]);
@@ -181,17 +180,17 @@ void affichage(void){
                     break;
             }
             printf("affichage flag\n");
-            for(char j=0;j<flagR;j++){
-                Rect_Flag[i].y = lignes[NumeroTour-1];
-                SDL_RenderCopy(rendue, Flag_R, NULL, &Rect_Flag[i]);
-            } for(char j=0;j<flagW;j++){
-                Rect_Flag[i].y = lignes[NumeroTour-1];
-                SDL_RenderCopy(rendue, Flag_W, NULL, &Rect_Flag[i]);
+            for(char j=0;j<(flag_tour[i] & 0x0F);j++){
+                Rect_Flag[i].y = lignes[i];
+                SDL_RenderCopy(rendue, Flag_R, NULL, &Rect_Flag[j]);
+            } for(char j=0;j<(flag_tour[i] >> 4);j++){
+                Rect_Flag[i].y = lignes[i];
+                SDL_RenderCopy(rendue, Flag_W, NULL, &Rect_Flag[j]);
             }
         }
-        for(i=0;i<4;i++){
+        for(char i=0;i<4;i++){
             Rect_Tour[i].y = lignes[NumeroTour-1];
-            switch(tab[i]){
+            switch(tour[i]){
                 case 0:
                     SDL_RenderCopy(rendue, cercleB, NULL, &Rect_Tour[i]);
                     break;
@@ -210,62 +209,27 @@ void affichage(void){
             }
         }
         printf("affichage flag\n");
-        for(char i=0;i<flagR;i++){
+        for(char i=0;i<(flag_tour[NumeroTour-1] >> 4);i++){
             Rect_Flag[i].y = lignes[NumeroTour-1];
             SDL_RenderCopy(rendue, Flag_R, NULL, &Rect_Flag[i]);
-        } for(char i=0;i<flagW;i++){
+        } for(char i=0;i<(flag_tour[NumeroTour-1] >> 4);i++){
             Rect_Flag[i].y = lignes[NumeroTour-1];
             SDL_RenderCopy(rendue, Flag_W, NULL, &Rect_Flag[i]);
         }
         
     }
+    SDL_RenderPresent(rendue);
 }
 
 void SDL_Printf(const char* message,unsigned char ligne){   
     switch(ligne){
         case 1:
+            printf("%s\n",message);
             break;
         case 2:
+            printf("%s\n",message);
             break;
     }
-}
-
-
-void affichageImage(choixImage_t choix, unsigned char tab[], unsigned char NumeroTour){
-    printf("affichage image\n");
-    unsigned char i=0, flagR=(tab[NumeroTour-1] & 0x0F), flagW=(tab[NumeroTour-1] >> 4);
-    switch(choix){
-        case texte:
-            printf("affichage texte\n");
-            switch(tab[0]){
-                case txt_continuer:
-                    SDL_RenderCopy(rendue, T_continuer, NULL, &Rect_Texte);
-                    break;
-                case txt_gen_man:
-                    SDL_RenderCopy(rendue, T_gen_man, NULL, &Rect_Texte);
-                    break;
-                case txt_gen_man_EnCour:
-                    SDL_RenderCopy(rendue, T_gen_man_EnCour, NULL, &Rect_Texte);
-                    break;
-                case txt_gen_rand:
-                    SDL_RenderCopy(rendue, T_gen_rand, NULL, &Rect_Texte);
-                    break;
-                case txt_gen_rand_Non:
-                    SDL_RenderCopy(rendue, T_gen_rand_Non, NULL, &Rect_Texte);
-                    break;
-                case txt_gen_rand_Oui:
-                    SDL_RenderCopy(rendue, T_gen_rand_Oui, NULL, &Rect_Texte);
-                    break;
-                case txt_quitter:
-                    SDL_RenderCopy(rendue, T_quitter, NULL, &Rect_Texte);
-                    break;
-                case txt_rejouer:
-                    SDL_RenderCopy(rendue, T_rejouer, NULL, &Rect_Texte);
-                    break;
-            }
-            break;
-    }
-    SDL_RenderPresent(rendue);
 }
 
 void SetUpRectangles(void){
