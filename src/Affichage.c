@@ -2,6 +2,7 @@
 #include <stdio.h>
 //mes fichiers
 #include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
 #include <Define.h>
 #include <Affichage.h>
 
@@ -26,14 +27,9 @@ SDL_Texture *Flag_W = NULL;
 //fond
 SDL_Texture *Fond = NULL;
 //textes
-SDL_Texture *T_continuer = NULL;
-SDL_Texture *T_gen_man_EnCour = NULL;
-SDL_Texture *T_gen_man = NULL;
-SDL_Texture *T_gen_rand_Non = NULL;
-SDL_Texture *T_gen_rand_Oui = NULL;
-SDL_Texture *T_gen_rand = NULL;
-SDL_Texture *T_quitter = NULL;
-SDL_Texture *T_rejouer = NULL;
+TTF_Font *police = NULL;
+SDL_Color C_Black;
+SDL_Texture *
 
 //rectangles pour textures
 SDL_Rect Rect_Fond;
@@ -52,7 +48,9 @@ SDL_Event event;
 void InitSDL(void){
     printf("init SDL\n");
     if (SDL_Init(SDL_INIT_VIDEO) != 0) ExitErreurSDL("Init");
-    printf("crea window\n")
+    if (TTF_Init() != 0) ExitErreurSDL("Init texte");
+
+    printf("crea window\n");
     fenetre = SDL_CreateWindow("Jeux du MasterMind", 2, 30, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
     if (!fenetre) ExitErreurSDL("creation de fenetre");
     printf("crea rendue\n");
@@ -67,7 +65,7 @@ void InitSDL(void){
 
 void ExitSDL(void){
     printf("exit SDL\n");
-    SDL_RenderClear(rendue);
+    SDL_DestroyRenderer(rendue);
     SDL_DestroyWindow(fenetre);
     SDL_Quit();
 }
@@ -80,73 +78,163 @@ void ExitErreurSDL(const char* location){
 }
 
 void affichage(void){
+    extern unsigned char etape_affichage, NumeroTour;
+    code_t tour_passe[12];
+    extern unsigned char flag_tour[12], tour[4], code[4];
     printf("affichage\n");
     SDL_RenderCopy(rendue, Fond, NULL, &Rect_Fond);
     SDL_RenderPresent(rendue);
+    if(etape_affichage > 0){
+        printf("affichage code\n");
+        for(i=0;i<4;i++){
+            switch (tab[i]){
+                case 0:
+                    SDL_RenderCopy(rendue, cercleB, NULL, &Rect_Code[i]);
+                    break;
+                case 1:
+                    SDL_RenderCopy(rendue, cercleG, NULL, &Rect_Code[i]);
+                    break;
+                case 2:
+                    SDL_RenderCopy(rendue, cercleJ, NULL, &Rect_Code[i]);
+                    break;
+                case 3:
+                    SDL_RenderCopy(rendue, cercleN, NULL, &Rect_Code[i]);
+                    break;
+                case 4:
+                    SDL_RenderCopy(rendue, cercleV, NULL, &Rect_Code[i]);
+                    break;
+            }
+        }
+    }
+    if(etape_affichage > 1){
+        for(unsigned char i=0; i<(i); i++){
+            Rect_Tour[0].y = lignes[NumeroTour-1];
+            switch(tour_passe[i].pos1){
+                case 0:
+                    SDL_RenderCopy(rendue, cercleB, NULL, &Rect_Tour[0]);
+                    break;
+                case 1:
+                    SDL_RenderCopy(rendue, cercleG, NULL, &Rect_Tour[0]);
+                    break;
+                case 2:
+                    SDL_RenderCopy(rendue, cercleJ, NULL, &Rect_Tour[0]);
+                    break;
+                case 3:
+                    SDL_RenderCopy(rendue, cercleN, NULL, &Rect_Tour[0]);
+                    break;
+                case 4:
+                    SDL_RenderCopy(rendue, cercleV, NULL, &Rect_Tour[0]);
+                    break;
+            }
+            Rect_Tour[1].y = lignes[NumeroTour-1];
+            switch(tour_passe[i].pos2){
+                case 0:
+                    SDL_RenderCopy(rendue, cercleB, NULL, &Rect_Tour[1]);
+                    break;
+                case 1:
+                    SDL_RenderCopy(rendue, cercleG, NULL, &Rect_Tour[1]);
+                    break;
+                case 2:
+                    SDL_RenderCopy(rendue, cercleJ, NULL, &Rect_Tour[1]);
+                    break;
+                case 3:
+                    SDL_RenderCopy(rendue, cercleN, NULL, &Rect_Tour[1]);
+                    break;
+                case 4:
+                    SDL_RenderCopy(rendue, cercleV, NULL, &Rect_Tour[1]);
+                    break;
+            }
+            Rect_Tour[2].y = lignes[NumeroTour-1];
+            switch(tour_passe[i].pos3){
+                case 0:
+                    SDL_RenderCopy(rendue, cercleB, NULL, &Rect_Tour[2]);
+                    break;
+                case 1:
+                    SDL_RenderCopy(rendue, cercleG, NULL, &Rect_Tour[2]);
+                    break;
+                case 2:
+                    SDL_RenderCopy(rendue, cercleJ, NULL, &Rect_Tour[2]);
+                    break;
+                case 3:
+                    SDL_RenderCopy(rendue, cercleN, NULL, &Rect_Tour[2]);
+                    break;
+                case 4:
+                    SDL_RenderCopy(rendue, cercleV, NULL, &Rect_Tour[2]);
+                    break;
+            }
+            Rect_Tour[3].y = lignes[NumeroTour-1];
+            switch(tour_passe[i].pos4){
+                case 0:
+                    SDL_RenderCopy(rendue, cercleB, NULL, &Rect_Tour[3]);
+                    break;
+                case 1:
+                    SDL_RenderCopy(rendue, cercleG, NULL, &Rect_Tour[3]);
+                    break;
+                case 2:
+                    SDL_RenderCopy(rendue, cercleJ, NULL, &Rect_Tour[3]);
+                    break;
+                case 3:
+                    SDL_RenderCopy(rendue, cercleN, NULL, &Rect_Tour[3]);
+                    break;
+                case 4:
+                    SDL_RenderCopy(rendue, cercleV, NULL, &Rect_Tour[3]);
+                    break;
+            }
+            printf("affichage flag\n");
+            for(char j=0;j<flagR;j++){
+                Rect_Flag[i].y = lignes[NumeroTour-1];
+                SDL_RenderCopy(rendue, Flag_R, NULL, &Rect_Flag[i]);
+            } for(char j=0;j<flagW;j++){
+                Rect_Flag[i].y = lignes[NumeroTour-1];
+                SDL_RenderCopy(rendue, Flag_W, NULL, &Rect_Flag[i]);
+            }
+        }
+        for(i=0;i<4;i++){
+            Rect_Tour[i].y = lignes[NumeroTour-1];
+            switch(tab[i]){
+                case 0:
+                    SDL_RenderCopy(rendue, cercleB, NULL, &Rect_Tour[i]);
+                    break;
+                case 1:
+                    SDL_RenderCopy(rendue, cercleG, NULL, &Rect_Tour[i]);
+                    break;
+                case 2:
+                    SDL_RenderCopy(rendue, cercleJ, NULL, &Rect_Tour[i]);
+                    break;
+                case 3:
+                    SDL_RenderCopy(rendue, cercleN, NULL, &Rect_Tour[i]);
+                    break;
+                case 4:
+                    SDL_RenderCopy(rendue, cercleV, NULL, &Rect_Tour[i]);
+                    break;
+            }
+        }
+        printf("affichage flag\n");
+        for(char i=0;i<flagR;i++){
+            Rect_Flag[i].y = lignes[NumeroTour-1];
+            SDL_RenderCopy(rendue, Flag_R, NULL, &Rect_Flag[i]);
+        } for(char i=0;i<flagW;i++){
+            Rect_Flag[i].y = lignes[NumeroTour-1];
+            SDL_RenderCopy(rendue, Flag_W, NULL, &Rect_Flag[i]);
+        }
+        
+    }
 }
+
+void SDL_Printf(const char* message,unsigned char ligne){   
+    switch(ligne){
+        case 1:
+            break;
+        case 2:
+            break;
+    }
+}
+
 
 void affichageImage(choixImage_t choix, unsigned char tab[], unsigned char NumeroTour){
     printf("affichage image\n");
     unsigned char i=0, flagR=(tab[NumeroTour-1] & 0x0F), flagW=(tab[NumeroTour-1] >> 4);
     switch(choix){
-        case AF_code:
-            printf("affichage code\n");
-            for(i=0;i<4;i++){
-                switch (tab[i]){
-                    case 0:
-                        SDL_RenderCopy(rendue, cercleB, NULL, &Rect_Code[i]);
-                        break;
-                    case 1:
-                        SDL_RenderCopy(rendue, cercleG, NULL, &Rect_Code[i]);
-                        break;
-                    case 2:
-                        SDL_RenderCopy(rendue, cercleJ, NULL, &Rect_Code[i]);
-                        break;
-                    case 3:
-                        SDL_RenderCopy(rendue, cercleN, NULL, &Rect_Code[i]);
-                        break;
-                    case 4:
-                        SDL_RenderCopy(rendue, cercleV, NULL, &Rect_Code[i]);
-                        break;
-                }
-            }
-            break;
-        case flag:
-            printf("affichage flag\n");
-            i=0;
-            for(char j=0;j<flagR;j++){
-                Rect_Flag[i].y = lignes[NumeroTour-1];
-                SDL_RenderCopy(rendue, Flag_R, NULL, &Rect_Flag[i]);
-                i++;
-            } for(char j=0;j<flagW;j++){
-                Rect_Flag[i].y = lignes[NumeroTour-1];
-                SDL_RenderCopy(rendue, Flag_W, NULL, &Rect_Flag[i]);
-                i++;
-            }
-            break;
-        case AF_tour:
-            printf("affichage jeu\n");
-            for(i=0;i<4;i++){
-                Rect_Tour[i].y = lignes[NumeroTour-1];
-                switch(tab[i]){
-                    case 0:
-                        SDL_RenderCopy(rendue, cercleB, NULL, &Rect_Tour[i]);
-                        break;
-                    case 1:
-                        SDL_RenderCopy(rendue, cercleG, NULL, &Rect_Tour[i]);
-                        break;
-                    case 2:
-                        SDL_RenderCopy(rendue, cercleJ, NULL, &Rect_Tour[i]);
-                        break;
-                    case 3:
-                        SDL_RenderCopy(rendue, cercleN, NULL, &Rect_Tour[i]);
-                        break;
-                    case 4:
-                        SDL_RenderCopy(rendue, cercleV, NULL, &Rect_Tour[i]);
-                        break;
-                }
-            }
-            break;
         case texte:
             printf("affichage texte\n");
             switch(tab[0]){
@@ -199,10 +287,6 @@ void SetUpRectangles(void){
         Rect_Tour[i].x = colonnes[1+i];
     }
     if (SDL_QueryTexture(cercleB, NULL, NULL, &Rect_cercleDeplacement.w, &Rect_cercleDeplacement.h) != 0) ExitErreurSDL("Chargement Rectangle de cercle");
-    //texte
-    if (SDL_QueryTexture(T_continuer, NULL, NULL, &Rect_Texte.w, &Rect_Texte.h) != 0) ExitErreurSDL("Chargement Rectangle de texte");
-    Rect_Texte.y = TextY;
-    Rect_Texte.x = TextX;
 }
 
 unsigned char RecupTouche_B_SDL(void){
@@ -243,35 +327,7 @@ unsigned char RecupTouche_B_SDL(void){
                 else if((event.button.x >= colonnes[0])&&(event.button.y >= lignes[2])&&(event.button.x <= (colonnes[0] + Rect_Code[2].w))&&(event.button.y <= (lignes[2] + Rect_Code[2].h))) return appuie_code3;
                 else if((event.button.x >= colonnes[0])&&(event.button.y >= lignes[3])&&(event.button.x <= (colonnes[0] + Rect_Code[3].w))&&(event.button.y <= (lignes[3] + Rect_Code[3].h))) return appuie_code4;
                 else if((event.button.x >= 733)&&(event.button.y >= 532)&&(event.button.x <= 834)&&(event.button.y <= 586)) return t_entree;
-                else {
-                    rendueDeplacement = SDL_GetRenderer(fenetre);
-                    Rect_cercleDeplacement.x = event.motion.x - (Rect_cercleDeplacement.w / 2);
-                    Rect_cercleDeplacement.y = event.motion.y - (Rect_cercleDeplacement.h / 2);
-                    SDL_RenderCopy(rendueDeplacement, cercleB, NULL, &Rect_cercleDeplacement);
-                    SDL_RenderPresent(rendueDeplacement);
-                    SDL_RenderClear(rendueDeplacement);
-                    SDL_RenderPresent(rendue);
-
-
-
-
-                    /*
-                    SDL_SaveBMP(SDL_GetWindowSurface(fenetre), "img/save/screenshot.bmp");
-                    Rect_cercleDeplacement.x = event.motion.x - (Rect_cercleDeplacement.w / 2);
-                    Rect_cercleDeplacement.y = event.motion.y - (Rect_cercleDeplacement.h / 2);
-                    SDL_RenderCopy(rendue, cercleB, NULL, &Rect_cercleDeplacement);
-                    SDL_RenderPresent(rendue);
-                    image = SDL_LoadBMP("img/save/screenshot.bmp");
-                    if (!image) ExitErreurSDL("recup de screenshot.bmp");
-                    screenshot = SDL_CreateTextureFromSurface(rendue, image);
-                    SDL_FreeSurface(image);
-                    if (SDL_QueryTexture(screenshot, NULL, NULL, &Rect_Screenshot.w, &Rect_Screenshot.h) != 0) ExitErreurSDL("Chargement Rectangle du screenshot");
-                    Rect_Screenshot.y = 0;
-                    Rect_Screenshot.x = 0;
-                    SDL_RenderCopy(rendue, screenshot, NULL, &Rect_Screenshot);
-                    SDL_RenderPresent(rendue);*/
-                    return appuie;
-                }
+                else return appuie;
                 break;
             default:
                 break;
@@ -351,46 +407,4 @@ void CreationTexture(void){
     Fond = SDL_CreateTextureFromSurface(rendue,image);
     SDL_FreeSurface(image);
     if (!Fond) ExitErreurSDL("creation de la texture Fond_mastermind");
-
-    //Textes
-    image = SDL_LoadBMP("img/Textes/continuer.bmp");
-    if (!image) ExitErreurSDL("creation de T_continuer");
-    T_continuer = SDL_CreateTextureFromSurface(rendue,image);
-    SDL_FreeSurface(image);
-    if (!T_continuer) ExitErreurSDL("creation de la texture T_continuer");
-    image = SDL_LoadBMP("img/Textes/gen_man_EnCour.bmp");
-    if (!image) ExitErreurSDL("creation de T_gen_man_EnCour");
-    T_gen_man_EnCour = SDL_CreateTextureFromSurface(rendue,image);
-    SDL_FreeSurface(image);
-    if (!T_gen_man_EnCour) ExitErreurSDL("creation de la texture T_gen_man_EnCour");
-    image = SDL_LoadBMP("img/Textes/gen_man.bmp");
-    if (!image) ExitErreurSDL("creation de T_gen_man");
-    T_gen_man = SDL_CreateTextureFromSurface(rendue,image);
-    SDL_FreeSurface(image);
-    if (!T_gen_man) ExitErreurSDL("creation de la texture T_gen_man");
-    image = SDL_LoadBMP("img/Textes/gen_rand_Non.bmp");
-    if (!image) ExitErreurSDL("creation de T_gen_rand_Non");
-    T_gen_rand_Non = SDL_CreateTextureFromSurface(rendue,image);
-    SDL_FreeSurface(image);
-    if (!T_gen_rand_Non) ExitErreurSDL("creation de la texture T_gen_rand_Non");
-    image = SDL_LoadBMP("img/Textes/gen_rand_Oui.bmp");
-    if (!image) ExitErreurSDL("creation de T_gen_rand_Oui");
-    T_gen_rand_Oui = SDL_CreateTextureFromSurface(rendue,image);
-    SDL_FreeSurface(image);
-    if (!T_gen_rand_Oui) ExitErreurSDL("creation de la texture T_gen_rand_Oui");
-    image = SDL_LoadBMP("img/Textes/gen_rand.bmp");
-    if (!image) ExitErreurSDL("creation de T_gen_rand");
-    T_gen_rand = SDL_CreateTextureFromSurface(rendue,image);
-    SDL_FreeSurface(image);
-    if (!T_gen_rand) ExitErreurSDL("creation de la texture T_gen_rand");
-    image = SDL_LoadBMP("img/Textes/quitter.bmp");
-    if (!image) ExitErreurSDL("creation de T_quitter");
-    T_quitter = SDL_CreateTextureFromSurface(rendue,image);
-    SDL_FreeSurface(image);
-    if (!T_quitter) ExitErreurSDL("creation de la texture T_quitter");
-    image = SDL_LoadBMP("img/Textes/rejouer.bmp");
-    if (!image) ExitErreurSDL("creation de T_rejouer");
-    T_rejouer = SDL_CreateTextureFromSurface(rendue,image);
-    SDL_FreeSurface(image);
-    if (!T_rejouer) ExitErreurSDL("creation de la texture T_rejouer");
 }

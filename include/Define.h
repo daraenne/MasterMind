@@ -25,6 +25,6 @@
 #define txt_rejouer         0x7
 
 typedef enum {AF_code, AF_tour, flag, texte}choixImage_t; 
-typedef enum Etat{Init, Tour, Correspondance, Fin}Etat_t;
+typedef enum Etat{Init, Tour, Correspondance, Fin, Resolution_Manuelle}Etat_t;
 typedef struct {unsigned char pos1; unsigned char pos2; unsigned char pos3; unsigned char pos4;}code_t;
 #endif // !Define_H

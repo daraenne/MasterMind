@@ -16,6 +16,7 @@ void InitSDL(void);
 void ExitSDL(void);
 void ExitErreurSDL(const char* location);
 void affichage(void);
+void SDL_Printf(char* message, unsigned char ligne);
 void affichageImage(choixImage_t choix, unsigned char tab[], unsigned char NumeroTour);
 void CreationTexture(void);
 void SetUpRectangles(void);
