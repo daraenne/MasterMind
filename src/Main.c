@@ -1,12 +1,8 @@
 // compilation :
-// gcc src/*.c -o bin/prog -I include -L lib/SDL -lmingw32 -lSDL2main -lSDL2
+// gcc src/*.c -o bin/MasterMind -I include -L lib/SDL -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -mwindows (-mwindows pour qu'il n'y est pas de terminal)
 //fichiers generaux
-#include <stdio.h>
-#include <conio.h>
 #include <stdlib.h>
-#include <time.h>
 //mes fichiers
-#include <SDL/SDL.h>
 #include <Define.h>
 #include <MachineAEtat.h>
 #include <Affichage.h>
@@ -15,7 +11,6 @@
 int main(int argc,char **argv){
     InitSDL();
     Etat_t etat_courant = Init;
-    printf("entre dans boucle infini\n");
     while(1){
         Current_State(etat_courant);
         etat_courant = Next_State(etat_courant);

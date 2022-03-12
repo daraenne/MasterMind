@@ -26,12 +26,11 @@ Etat_t Next_State(Etat_t CurrentState){
             if(flag_bon){
                 Next_State = Fin;
                 bool_victoire = 1;
-                break;
-            }else if (NumeroTour <= 12){
-                Next_State = Resolution_Manuelle;
-            }else{
+            }else if (NumeroTour == 12){
                 Next_State = Fin;
                 bool_victoire = 0;
+            }else{
+                Next_State = Resolution_Manuelle;
             }
             break;
 
@@ -39,31 +38,28 @@ Etat_t Next_State(Etat_t CurrentState){
             if(flag_bon){
                 Next_State = Fin;
                 bool_victoire = 1;
-            }else if (NumeroTour <= 12){
-                Next_State = Correspondance;
-            }else{
+            }else if (NumeroTour == 12){
                 Next_State = Fin;
                 bool_victoire = 0;
+            }else{
+                affichage();
+                SDL_Printf("tour suivant : tapez espace ...",1);
+                do{
+                    getter = 0;
+                    getter = RecupTouche_B_SDL();
+                }while((getter != t_espace)&&(getter != appuie));
+                Next_State = Correspondance;
             }
             break;
 
         case Correspondance:
             Next_State = Tour;
-            printf("tour suivant : tapez espace ...\n");
-            choix_text[0] = txt_continuer;
-            affichage();
-            do{
-                getter = 0;
-                getter = RecupTouche_B_SDL();
-            }while((getter != t_espace)&&(getter != appuie));
             break;
 
         case Fin:
             if(retry){
-                affichage();
                 Next_State = Init;
             }else{
-                printf("fin ...");
                 ExitSDL();
                 exit(EXIT_SUCCESS);
             }
@@ -73,22 +69,17 @@ Etat_t Next_State(Etat_t CurrentState){
 }
 
 void Current_State(Etat_t etat_courant){
-    printf("current state\n");
     unsigned char while_bool = 1, gen;
     switch(etat_courant){
         case Init:
-            printf("init\n");
             //init ecran
             etape_affichage = 0;
-            affichage();
 
             // mise a 0 du nombre de tour
             NumeroTour = 0;
 
             // choix resolution manuelle ou automatique
 
-            printf("resolution : auto <----> manuelle\n");
-            printf("auto\r");
             affichage();
             SDL_Printf("resolution manuelle <> automatique ",1);
             SDL_Printf("automatique",2);
@@ -101,28 +92,24 @@ void Current_State(Etat_t etat_courant){
                         while_bool = 0;
                         break;
                     case t_droite :
-                        printf("auto    \r");
                         affichage();
                         SDL_Printf("resolution manuelle <> automatique ",1);
                         SDL_Printf("automatique",2);
                         resol = 1;
                         break;
                     case appuie_texteD :
-                        printf("auto    \r");
                         affichage();
                         SDL_Printf("resolution manuelle <> automatique ",1);
                         SDL_Printf("automatique",2);
                         resol = 1;
                         break;
                     case t_gauche :
-                        printf("manuelle\r");
                         affichage();
                         SDL_Printf("resolution manuelle <> automatique ",1);
                         SDL_Printf("manuelle",2);
                         resol = 0;
                         break;
                     case appuie_texteG :
-                        printf("manuelle\r");
                         affichage();
                         SDL_Printf("resolution manuelle <> automatique ",1);
                         SDL_Printf("manuelle",2);
@@ -134,8 +121,6 @@ void Current_State(Etat_t etat_courant){
             }while_bool = 1;
 
             // choix entre generation a la main ou random
-            printf("generation du code : a la main <---> aleatoire\n");
-            printf("a la main\r");
             affichage();
             SDL_Printf("generation du code : manuellement <> aleatoirement",1);
             SDL_Printf("manuellement",2);
@@ -147,28 +132,24 @@ void Current_State(Etat_t etat_courant){
                         while_bool = 0;
                         break;
                     case t_droite:
-                        printf("aleatoire\r");
                         affichage();
                         SDL_Printf("generation du code : manuellement <> aleatoirement",1);
                         SDL_Printf("aleatoirement",2);
                         gen = 0;
                         break;
                     case appuie_texteD:
-                        printf("aleatoire\r");
                         affichage();
                         SDL_Printf("generation du code : manuellement <> aleatoirement",1);
                         SDL_Printf("aleatoirement",2);
                         gen = 0;
                         break;
                     case t_gauche:
-                        printf("a la main\r");
                         affichage();
                         SDL_Printf("generation du code : manuellement <> aleatoirement",1);
                         SDL_Printf("manuellement",2);
                         gen = 1;
                         break;
                     case appuie_texteG:
-                        printf("a la main\r");
                         affichage();
                         SDL_Printf("generation du code : manuellement <> aleatoirement",1);
                         SDL_Printf("manuellement",2);
@@ -181,7 +162,6 @@ void Current_State(Etat_t etat_courant){
                 //on s'assure que le code soit initialiser correctement
                 for(char i=0;i<4;i++) code[i] = 0;
                 etape_affichage = 1;
-                affichage();
                 do{
                     // generation du code
                     getter = RecupTouche_B_SDL();
@@ -189,46 +169,35 @@ void Current_State(Etat_t etat_courant){
                         case appuie_code1:
                             code[0]++;
                             if(code[0]==5) code[0] = 0;
-                            printf("pos 1 = %d\n", code[0]);
                             affichage();
+                            SDL_Printf("selectionnez le code puis validez",1);
                             break;
                         case appuie_code2:
                             code[1]++;
                             if(code[1]==5) code[1] = 0;
-                            printf("pos 2 = %d\n", code[1]);
                             affichage();
+                            SDL_Printf("selectionnez le code puis validez",1);
                             break;
                         case appuie_code3:
                             code[2]++;
                             if(code[2]==5) code[2] = 0;
-                            printf("pos 3 = %d\n", code[2]);
                             affichage();
+                            SDL_Printf("selectionnez le code puis validez",1);
                             break;
                         case appuie_code4:
                             code[3]++;
                             if(code[3]==5) code[3] = 0;
-                            printf("pos 4 = %d\n", code[3]);
                             affichage();
+                            SDL_Printf("selectionnez le code puis validez",1);
                             break;
                     }
                 }while(getter != t_entree);
-                // affichage du code
-                printf("code :");
-                for(unsigned char i=0;i<4;i++)printf("%d",code[i]);
-                printf("\n");
             }else{
                 while(while_bool){
                     // generation random
                     srand(time(NULL));
                     for(unsigned char i=0;i<4;i++)code[i] = rand()%5;
-                    // affichage du code
-                    printf("code :");
-                    affichage();
-                    for(unsigned char i=0;i<4;i++)printf("%d",code[i]);
-                    printf("\n");
-                    printf("relancer ? (oui <-----> non)\n");
                     while_bool = 0;
-                    printf("non\r");
                     affichage();
                     SDL_Printf("regenerer le code : oui <> non",1);
                     SDL_Printf("non",2);
@@ -236,21 +205,18 @@ void Current_State(Etat_t etat_courant){
                         getter = RecupTouche_B_SDL();
                         if((getter == t_droite)||(getter == appuie_texteD)){
                             while_bool = 0;
-                            printf("non\r");
                             affichage();
                             SDL_Printf("regenerer le code : oui <> non",1);
                             SDL_Printf("non",2);
                         }
                         if((getter == t_gauche)||(getter == appuie_texteG)){
                             while_bool = 1;
-                            printf("oui\r");
                             affichage();
                             SDL_Printf("regenerer le code : oui <> non",1);
                             SDL_Printf("oui",2);
                         }
                         if(getter == t_entree) break;
                     }
-                    printf("       \r");
                 }while_bool = 1;
             }
             if(resol){
@@ -288,23 +254,14 @@ void Current_State(Etat_t etat_courant){
             tour_passe[NumeroTour-1].pos3 = tour[2];
             tour_passe[NumeroTour-1].pos4 = tour[3];
 
-            printf("\nSelection du code a soumettre\n");
             for(unsigned char i=0;i<4;i++) tour[i] = getch() - '0';
 
             flag_tour[NumeroTour-1] = test_valid(tour, code);
             if(flag_tour[NumeroTour-1] == 0x04) flag_bon = 1;
-
-            // affichage resultat
-            printf("tour %d:",NumeroTour);
-            for(unsigned char i=0;i<4;i++) printf("%d",tour[i]);
-            printf("\nflags :%.2x pour le tour %d\n",flag_tour[NumeroTour-1],NumeroTour);
-            affichage();
-
             break;
     
         case Tour:
-            NumeroTour += 1;
-            flag_bon = 0;
+            NumeroTour++;
             if (NumeroTour == 1){
                 // on test 1122 comme valeur
                 tour[0] = 1; tour[1] = 1; tour[2] = 2; tour[3] = 2;
@@ -314,25 +271,20 @@ void Current_State(Etat_t etat_courant){
                 tour_passe[NumeroTour-1].pos3 = tour[2];
                 tour_passe[NumeroTour-1].pos4 = tour[3];
                 flag_tour[NumeroTour-1] = test_valid(tour, code);
-                if(flag_tour[NumeroTour-1] == 0x40) flag_bon = 1; // 0x40 car on a 4 flag R et 0 flag B pour une bonne reponse
-                // affichage resultat etape 2
-                printf("tour %d:",NumeroTour);
+                if(flag_tour[NumeroTour-1] == 0x04) flag_bon = 1;
+                else flag_bon = 0;
                 etape_affichage = 2;
-                for(unsigned char i=0;i<4;i++) printf("%d",tour[i]);
-                printf("\nflags :%.2x pour le tour 1\n",flag_tour[NumeroTour-1]);
-                affichage();
             }else{
-                tour_passe[NumeroTour-1].pos1 = tour[0];
-                tour_passe[NumeroTour-1].pos2 = tour[1];
-                tour_passe[NumeroTour-1].pos3 = tour[2];
-                tour_passe[NumeroTour-1].pos4 = tour[3];
                 flag_tour[NumeroTour-1] = test_valid(tour, code);
                 if(flag_tour[NumeroTour-1] == 0x04) flag_bon = 1;
-                // affichage resultat
-                printf("tour %d:",NumeroTour);
-                for(unsigned char i=0;i<4;i++) printf("%d",tour[i]);
-                printf("\nflags :%.2x pour le tour %d\n",flag_tour[NumeroTour-1],NumeroTour);
-                affichage();
+                else {
+                    flag_bon = 0;
+                    tour_passe[NumeroTour-1].pos1 = tour[0];
+                    tour_passe[NumeroTour-1].pos2 = tour[1];
+                    tour_passe[NumeroTour-1].pos3 = tour[2];
+                    tour_passe[NumeroTour-1].pos4 = tour[3];
+                }
+                
             }
             break;
 
@@ -353,18 +305,13 @@ void Current_State(Etat_t etat_courant){
 
         case Fin:
             // affichage fin de partie victoire ou defaite
-            if(bool_victoire){
-                printf("vous avez trouve le code en %d tour, et c'est :\n",NumeroTour);
-                for(unsigned char i=0;i<4;i++) printf("%d",tour[i]);
-                printf("\n");
-            }else{
-                printf("vous avez depasse 12 tours\n");
+            if(!bool_victoire){
+                SDL_Printf("vous avez depasse 12 tours",1);
             }
             // menu pour quiter ou recommencer
-            printf("replay <---> quit :\n");
-            printf("replay\r");
-            choix_text[0] = txt_rejouer;
             affichage();
+            SDL_Printf("replay <> quit :",1);
+            SDL_Printf("replay",2);
             retry = 1;
             while(while_bool){
                 getter = RecupTouche_B_SDL();
@@ -373,27 +320,23 @@ void Current_State(Etat_t etat_courant){
                         while_bool = 0;
                         break;
                     case t_droite:
-                        printf("quit  \r");
-                        choix_text[0] = txt_quitter;
                         affichage();
+                        SDL_Printf("quit",2);
                         retry = 0;
                         break;
                     case appuie_texteD:
-                        printf("quit  \r");
-                        choix_text[0] = txt_quitter;
                         affichage();
+                        SDL_Printf("quit",2);
                         retry = 0;
                         break;
                     case t_gauche:
-                        printf("replay\r");
-                        choix_text[0] = txt_rejouer;
                         affichage();
+                        SDL_Printf("replay",2);
                         retry = 1;
                         break;
                     case appuie_texteG:
-                        printf("replay\r");
-                        choix_text[0] = txt_rejouer;
                         affichage();
+                        SDL_Printf("replay",2);
                         retry = 1;
                         break;
                 }
