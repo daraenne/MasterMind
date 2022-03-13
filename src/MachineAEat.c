@@ -122,8 +122,8 @@ void Current_State(Etat_t etat_courant){
 
             // choix entre generation a la main ou random
             affichage();
-            SDL_Printf("generation du code : manuellement <> aleatoirement",1);
-            SDL_Printf("manuellement",2);
+            SDL_Printf("generation du code : manuelle <> aleatoire",1);
+            SDL_Printf("manuelle",2);
             gen = 1;
             while(while_bool){
                 getter = RecupTouche_B_SDL();
@@ -133,26 +133,26 @@ void Current_State(Etat_t etat_courant){
                         break;
                     case t_droite:
                         affichage();
-                        SDL_Printf("generation du code : manuellement <> aleatoirement",1);
-                        SDL_Printf("aleatoirement",2);
+                        SDL_Printf("generation du code : manuelle <> aleatoire",1);
+                        SDL_Printf("aleatoire",2);
                         gen = 0;
                         break;
                     case appuie_texteD:
                         affichage();
-                        SDL_Printf("generation du code : manuellement <> aleatoirement",1);
-                        SDL_Printf("aleatoirement",2);
+                        SDL_Printf("generation du code : manuelle <> aleatoire",1);
+                        SDL_Printf("aleatoire",2);
                         gen = 0;
                         break;
                     case t_gauche:
                         affichage();
-                        SDL_Printf("generation du code : manuellement <> aleatoirement",1);
-                        SDL_Printf("manuellement",2);
+                        SDL_Printf("generation du code : manuelle <> aleatoire",1);
+                        SDL_Printf("manuelle",2);
                         gen = 1;
                         break;
                     case appuie_texteG:
                         affichage();
-                        SDL_Printf("generation du code : manuellement <> aleatoirement",1);
-                        SDL_Printf("manuellement",2);
+                        SDL_Printf("generation du code : manuelle <> aleatoire",1);
+                        SDL_Printf("manuelle",2);
                         gen = 1;
                         break;
                 }
@@ -162,6 +162,8 @@ void Current_State(Etat_t etat_courant){
                 //on s'assure que le code soit initialiser correctement
                 for(char i=0;i<4;i++) code[i] = 0;
                 etape_affichage = 1;
+                affichage();
+                SDL_Printf("selectionnez le code puis validez",1);
                 do{
                     // generation du code
                     getter = RecupTouche_B_SDL();
@@ -197,6 +199,7 @@ void Current_State(Etat_t etat_courant){
                     // generation random
                     srand(time(NULL));
                     for(unsigned char i=0;i<4;i++)code[i] = rand()%5;
+                    etape_affichage = 1;
                     while_bool = 0;
                     affichage();
                     SDL_Printf("regenerer le code : oui <> non",1);
@@ -321,21 +324,25 @@ void Current_State(Etat_t etat_courant){
                         break;
                     case t_droite:
                         affichage();
+                        SDL_Printf("replay <> quit :",1);
                         SDL_Printf("quit",2);
                         retry = 0;
                         break;
                     case appuie_texteD:
                         affichage();
+                        SDL_Printf("replay <> quit :",1);
                         SDL_Printf("quit",2);
                         retry = 0;
                         break;
                     case t_gauche:
                         affichage();
+                        SDL_Printf("replay <> quit :",1);
                         SDL_Printf("replay",2);
                         retry = 1;
                         break;
                     case appuie_texteG:
                         affichage();
+                        SDL_Printf("replay <> quit :",1);
                         SDL_Printf("replay",2);
                         retry = 1;
                         break;

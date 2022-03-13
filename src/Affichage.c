@@ -216,15 +216,15 @@ void affichage(void){
 }
 
 void SDL_Printf(const char* message,unsigned char ligne){
-    //centrer : positions de base + ((fenetre de texte-taille texte)/2)
-    TTF_Font *police = TTF_OpenFont("arial.ttf",20);
-    if(!police) ExitErreurSDL("erreur creation police");
     SDL_Color C_Black;C_Black.a = 255;C_Black.r = 0;C_Black.g = 0;C_Black.b = 0;
     SDL_Rect Rect_Text;
     SDL_Surface *SurTexte=NULL;
     SDL_Texture *Texte=NULL;
+    TTF_Font *police=NULL;
     switch(ligne){
         case 1:
+            police = TTF_OpenFont("Polices/arial.ttf",20);
+            if(!police) ExitErreurSDL("erreur creation police");
             //x=275 || y=516
             printf("%s\n",message);
             SurTexte = TTF_RenderText_Solid(police, message, C_Black);
@@ -233,20 +233,25 @@ void SDL_Printf(const char* message,unsigned char ligne){
             if (!Texte) ExitErreurSDL("creation de Texte");
             SDL_FreeSurface(SurTexte);
             SDL_QueryTexture(Texte,NULL,NULL,&Rect_Text.w,&Rect_Text.h);
+            //centrage du texte dans la boite de dialogue
             Rect_Text.x = 275 + ((455-Rect_Text.w)/2);
             Rect_Text.y = 516 + ((39-Rect_Text.h)/2);
             SDL_RenderCopy(rendue,Texte,NULL,&Rect_Text);
             SDL_RenderPresent(rendue);
             break;
         case 2:
+            police = TTF_OpenFont("Polices/BabySchoolItalic.ttf",20);
+            if(!police) ExitErreurSDL("erreur creation police");
             //x=275 || y=555
             printf("%s\n",message);
+            TTF_SetFontStyle(police, TTF_STYLE_UNDERLINE);
             SurTexte = TTF_RenderText_Solid(police, message, C_Black);
             if (!SurTexte) ExitErreurSDL("creation de Surtexte");
             Texte = SDL_CreateTextureFromSurface(rendue, SurTexte);
             if (!Texte) ExitErreurSDL("creation de Texte");
             SDL_FreeSurface(SurTexte);
             SDL_QueryTexture(Texte,NULL,NULL,&Rect_Text.w,&Rect_Text.h);
+            //centrage du texte dans la boite de dialogue
             Rect_Text.x = 275 + ((455-Rect_Text.w)/2);
             Rect_Text.y = 555 + ((39-Rect_Text.h)/2);
             SDL_RenderCopy(rendue,Texte,NULL,&Rect_Text);
