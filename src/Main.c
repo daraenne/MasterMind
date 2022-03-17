@@ -7,7 +7,6 @@
 #include <MachineAEtat.h>
 #include <Affichage.h>
 
-
 int main(int argc,char **argv){
     InitSDL();
     Etat_t etat_courant = Init;

@@ -73,13 +73,13 @@ void ExitErreurSDL(const char* location){
 }
 
 void affichage(void){
-    extern unsigned char etape_affichage, NumeroTour;
+    extern unsigned char etape_affichage, NumeroTour, Automatique;
     extern code_t tour_passe[12];
     extern unsigned char flag_tour[12], tour[4], code[4];
     unsigned char k;
     //printf("affichage\n");
     SDL_RenderCopy(rendue, Fond, NULL, &Rect_Fond);
-    if(etape_affichage > 0){
+    if((etape_affichage > 0) && (Automatique)){
         //printf("affichage code\n");
         for(char i=0;i<4;i++){
             switch (code[i]){
@@ -281,6 +281,7 @@ void SetUpRectangles(void){
 }
 
 unsigned char RecupTouche_B_SDL(void){
+    extern unsigned char NumeroTour;
     while(SDL_WaitEvent(&event)){
         switch(event.type){
             case SDL_QUIT:
@@ -307,13 +308,15 @@ unsigned char RecupTouche_B_SDL(void){
                 }
                 break;
             case SDL_MOUSEBUTTONDOWN:
-                if((event.button.x >= 350)&&(event.button.y >= 550)&&(event.button.x <= 480)&&(event.button.y <= 580)) return appuie_texteG;
-                else if((event.button.x >= 530)&&(event.button.y >= 550)&&(event.button.x <= 650)&&(event.button.y <= 580)) return appuie_texteD;
-                else if((event.button.x >= colonnes[0])&&(event.button.y >= lignes[0])&&(event.button.x <= (colonnes[0] + Rect_Code[0].w))&&(event.button.y <= (lignes[0] + Rect_Code[0].h))) return appuie_code1;
+                if((event.button.x >= colonnes[0])&&(event.button.y >= lignes[0])&&(event.button.x <= (colonnes[0] + Rect_Code[0].w))&&(event.button.y <= (lignes[0] + Rect_Code[0].h))) return appuie_code1;
                 else if((event.button.x >= colonnes[0])&&(event.button.y >= lignes[1])&&(event.button.x <= (colonnes[0] + Rect_Code[1].w))&&(event.button.y <= (lignes[1] + Rect_Code[1].h))) return appuie_code2;
                 else if((event.button.x >= colonnes[0])&&(event.button.y >= lignes[2])&&(event.button.x <= (colonnes[0] + Rect_Code[2].w))&&(event.button.y <= (lignes[2] + Rect_Code[2].h))) return appuie_code3;
                 else if((event.button.x >= colonnes[0])&&(event.button.y >= lignes[3])&&(event.button.x <= (colonnes[0] + Rect_Code[3].w))&&(event.button.y <= (lignes[3] + Rect_Code[3].h))) return appuie_code4;
                 else if((event.button.x >= 733)&&(event.button.y >= 532)&&(event.button.x <= 834)&&(event.button.y <= 586)) return t_entree;
+                else if((event.button.x >= colonnes[1])&&(event.button.y >= lignes[NumeroTour-1])&&(event.button.x <= (colonnes[1] + Rect_Code[0].w))&&(event.button.y <= (lignes[NumeroTour-1] + Rect_Code[0].h))) return appuie_Tour1;
+                else if((event.button.x >= colonnes[2])&&(event.button.y >= lignes[NumeroTour-1])&&(event.button.x <= (colonnes[2] + Rect_Code[1].w))&&(event.button.y <= (lignes[NumeroTour-1] + Rect_Code[1].h))) return appuie_Tour2;
+                else if((event.button.x >= colonnes[3])&&(event.button.y >= lignes[NumeroTour-1])&&(event.button.x <= (colonnes[3] + Rect_Code[2].w))&&(event.button.y <= (lignes[NumeroTour-1] + Rect_Code[2].h))) return appuie_Tour3;
+                else if((event.button.x >= colonnes[4])&&(event.button.y >= lignes[NumeroTour-1])&&(event.button.x <= (colonnes[4] + Rect_Code[3].w))&&(event.button.y <= (lignes[NumeroTour-1] + Rect_Code[3].h))) return appuie_Tour4;
                 else return appuie;
                 break;
             case SDL_MOUSEMOTION:

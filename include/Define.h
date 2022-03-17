@@ -11,9 +11,11 @@
 #define appuie_code2        0xA1
 #define appuie_code3        0xA2
 #define appuie_code4        0xA3
-#define appuie_texteG       0xA4
-#define appuie_texteD       0xA5
-#define appuie              0xA6
+#define appuie_Tour1        0xA4
+#define appuie_Tour2        0xA5
+#define appuie_Tour3        0xA6
+#define appuie_Tour4        0xA7
+#define appuie              0xA8
 //choix du texte
 #define txt_continuer       0x0
 #define txt_gen_man_EnCour  0x1
@@ -24,6 +26,6 @@
 #define txt_quitter         0x6
 #define txt_rejouer         0x7
 
-typedef enum Etat{Init=0, Tour=1, Correspondance=2, Fin=3, Resolution_Manuelle=4}Etat_t;
+typedef enum Etat{Init, Tour, Correspondance, Fin, Resolution_Manuelle}Etat_t;
 typedef struct {unsigned char pos1; unsigned char pos2; unsigned char pos3; unsigned char pos4;}code_t;
 #endif // !Define_H
