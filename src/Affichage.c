@@ -1,77 +1,78 @@
-//fichiers generaux
-#include <stdio.h>
-//mes fichiers
-#include <SDL/SDL.h>
-#include <SDL/SDL_ttf.h>
-#include <Define.h>
-#include <Affichage.h>
+//include 
+    //SDL
+        #include <SDL/SDL.h>
+        #include <SDL/SDL_ttf.h>
+    //nos headers
+        #include <Define.h>
+        #include <Affichage.h>
+//
 
-//fenetre
-SDL_Window *fenetre = NULL;
-//rendue
-SDL_Renderer *rendue = NULL;
-//surface (seras liberer juste apres avoire creer la texture correpondante)
-SDL_Surface *image = NULL;
-//textures
-//cercles
-SDL_Texture *cercleB = NULL;
-SDL_Texture *cercleG = NULL;
-SDL_Texture *cercleJ = NULL;
-SDL_Texture *cercleN = NULL;
-SDL_Texture *cercleV = NULL;
-//flags
-SDL_Texture *Flag_R = NULL;
-SDL_Texture *Flag_W = NULL;
-//fond
-SDL_Texture *Fond = NULL;
-
-//rectangles pour textures
-SDL_Rect Rect_Fond;
-SDL_Rect Rect_cercleDeplacement;
-SDL_Rect Rect_Code[4];
-SDL_Rect Rect_Flag[4];
-SDL_Rect Rect_Tour[4];
-//tableaux pour les positions des lignes et colonnes
-uint16_t lignes[12];
-uint16_t colonnes[9];
-//event
-SDL_Event event;
+//initialisations globales
+    //fenetre
+        SDL_Window *fenetre = NULL;
+    //rendue
+        SDL_Renderer *rendue = NULL;
+    //surface (seras liberer juste apres avoire creer la texture correpondante)
+        SDL_Surface *image = NULL;
+    //textures
+        //cercles
+            SDL_Texture *cercleB = NULL;
+            SDL_Texture *cercleG = NULL;
+            SDL_Texture *cercleJ = NULL;
+            SDL_Texture *cercleN = NULL;
+            SDL_Texture *cercleV = NULL;
+        //flags
+            SDL_Texture *Flag_R = NULL;
+            SDL_Texture *Flag_W = NULL;
+        //fond
+            SDL_Texture *Fond = NULL;
+    //rectangles pour textures
+        SDL_Rect Rect_Fond;
+        SDL_Rect Rect_cercleDeplacement;
+        SDL_Rect Rect_Code[4];
+        SDL_Rect Rect_Flag[4];
+        SDL_Rect Rect_Tour[4];
+    //tableaux pour les positions des lignes et colonnes
+        uint16_t lignes[12];
+        uint16_t colonnes[9];
+    //event
+        SDL_Event event;
+//
 
 void InitSDL(void){
+    //initialisation de SDL_Video et de TTF si une erreur survient on sort du programme avec ExitErreurSDL()
     if (SDL_Init(SDL_INIT_VIDEO) != 0) ExitErreurSDL("Init");
     if (TTF_Init() != 0) ExitErreurSDL("Init texte");
-
-    fenetre = SDL_CreateWindow("Jeux du MasterMind", 2, 30, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
-    if (!fenetre) ExitErreurSDL("creation de fenetre");
-    rendue = SDL_CreateRenderer(fenetre, -1, SDL_RENDERER_ACCELERATED);
-    if (!rendue) ExitErreurSDL("creation rendue");
-    SDL_RenderPresent(rendue);
-    CreationTexture();
-    SetUpPositions();
-    SetUpRectangles();
-    affichage();
+    fenetre = SDL_CreateWindow("Jeux du MasterMind", 2, 30, WINDOW_WIDTH, WINDOW_HEIGHT, 0);                    //creation d'une fenetre
+    if (!fenetre) ExitErreurSDL("creation de fenetre");                                                         //si la fenetre ne c'est pas creer on sort
+    rendue = SDL_CreateRenderer(fenetre, -1, SDL_RENDERER_ACCELERATED);                                         //creation du rendue
+    if (!rendue) ExitErreurSDL("creation rendue");                                                              //si pas de rendue on sort  
+    SDL_RenderPresent(rendue);                                                                                  //on affiche le rendue
+    CreationTexture();                                                                                          //on creer toutes les textures a partir des images
+    SetUpPositions();                                                                                           //on initialise les positions des differentes images
+    SetUpRectangles();                                                                                          //on creer les rectangle permettant la mise dans le rendue des textures
+    affichage();                                                                                                //on affiche ce qu'il y a a afficher
 }
 
 void ExitSDL(void){
-    SDL_DestroyRenderer(rendue);
-    SDL_DestroyWindow(fenetre);
-    SDL_Quit();
+    SDL_DestroyRenderer(rendue);                                                                                //rendue
+    SDL_DestroyWindow(fenetre);                                                                                 //fenetre
+    SDL_Quit();                                                                                                 //la SDL en elle meme
 }
 
 void ExitErreurSDL(const char* location){
-    SDL_Log("ERREUR :%s > %s\n", location, SDL_GetError());
-    ExitSDL();
+    SDL_Log("ERREUR :%s > %s\n", location, SDL_GetError());                                                     //affichage erreur et localisation
+    ExitSDL();                                                                                                  //fermeture de la SDL
     exit(EXIT_FAILURE);
 }
 
 void affichage(void){
-    extern unsigned char etape_affichage, NumeroTour, Automatique;
-    extern code_t tour_passe[12];
-    extern unsigned char flag_tour[12], tour[4], code[4];
-    unsigned char k;
-    SDL_RenderCopy(rendue, Fond, NULL, &Rect_Fond);
-    if((etape_affichage > 0) && (Automatique)){
-        for(char i=0;i<4;i++){
+    extern unsigned char etape_affichage, NumeroTour, Automatique;                                              //on recupere l'etape du programme, le numero du tour actuel, ainsi que l'affichage du code
+    extern code_t tour_passe[12];                                                                               //on recupere les tour precedent
+    extern unsigned char flag_tour[12], tour[4], code[4];                                                       //on recupere les flags total dans le jeu, le tour actuel, le code
+    SDL_RenderCopy(rendue, Fond, NULL, &Rect_Fond);                                                             //on met le fond dans le rendue (permet de suprimmer tout element SDL ajouter en externe de cette fonction)
+    if((etape_affichage > 0) && (Automatique)){                                                                 //on verifie que l'etape d'affichage est bien passer a au moins 1 et qu'il faille afficher le code
+        for(char i=0;i<4;i++){                                                                                  //on affiche le code
             switch (code[i]){
                 case 0:
                     SDL_RenderCopy(rendue, cercleB, NULL, &Rect_Code[i]);
@@ -91,12 +92,12 @@ void affichage(void){
             }
         }
     }
-    if(etape_affichage > 1){
-        for(unsigned char i=0; i<(NumeroTour-1); i++){
+    if(etape_affichage > 1){                                                                                    //on verifie que l'etape d'affichage est au moins a 2
+        for(unsigned char i=0; i<(NumeroTour-1); i++){                                                          //on affiche les different tour et leurs flags
             Rect_Tour[0].y = lignes[i];
-            switch(tour_passe[i].pos1){
+            switch(tour_passe[i].pos1){                                                                         //pos1
                 case 0:
-                    SDL_RenderCopy(rendue, cercleB, NULL, &Rect_Tour[0]);
+                    SDL_RenderCopy(rendue, cercleB, NULL, &Rect_Tour[0]);                                       
                     break;
                 case 1:
                     SDL_RenderCopy(rendue, cercleG, NULL, &Rect_Tour[0]);
@@ -112,7 +113,7 @@ void affichage(void){
                     break;
             }
             Rect_Tour[1].y = lignes[i];
-            switch(tour_passe[i].pos2){
+            switch(tour_passe[i].pos2){                                                                         //pos2
                 case 0:
                     SDL_RenderCopy(rendue, cercleB, NULL, &Rect_Tour[1]);
                     break;
@@ -130,7 +131,7 @@ void affichage(void){
                     break;
             }
             Rect_Tour[2].y = lignes[i];
-            switch(tour_passe[i].pos3){
+            switch(tour_passe[i].pos3){                                                                         //pos3
                 case 0:
                     SDL_RenderCopy(rendue, cercleB, NULL, &Rect_Tour[2]);
                     break;
@@ -148,7 +149,7 @@ void affichage(void){
                     break;
             }
             Rect_Tour[3].y = lignes[i];
-            switch(tour_passe[i].pos4){
+            switch(tour_passe[i].pos4){                                                                         //pos4
                 case 0:
                     SDL_RenderCopy(rendue, cercleB, NULL, &Rect_Tour[3]);
                     break;
@@ -165,15 +166,15 @@ void affichage(void){
                     SDL_RenderCopy(rendue, cercleV, NULL, &Rect_Tour[3]);
                     break;
             }
-            for(char j=0;j<(flag_tour[i] & 0x0F);j++){
+            for(char j=0;j<(flag_tour[i] & 0x0F);j++){                                                          //flags rouge
                 Rect_Flag[j].y = lignes[i];
                 SDL_RenderCopy(rendue, Flag_R, NULL, &Rect_Flag[j]);
-            } for(char j=(flag_tour[i] & 0x0F);j<((flag_tour[i] & 0x0F)+(flag_tour[i] >> 4));j++){
+            } for(char j=(flag_tour[i] & 0x0F);j<((flag_tour[i] & 0x0F)+(flag_tour[i] >> 4));j++){              //flags blanc
                 Rect_Flag[j].y = lignes[i];
                 SDL_RenderCopy(rendue, Flag_W, NULL, &Rect_Flag[j]);
             }
         }
-        for(char i=0;i<4;i++){
+        for(char i=0;i<4;i++){                                                                                  //on affiche aussi l'etat actuel du tour
             Rect_Tour[i].y = lignes[NumeroTour-1];
             switch(tour[i]){
                 case 0:
@@ -193,50 +194,56 @@ void affichage(void){
                     break;
             }
         }
-        for(char i=0;i<(flag_tour[NumeroTour-1] & 0x0F);i++){
+        for(char i=0;i<(flag_tour[NumeroTour-1] & 0x0F);i++){                                                   //ainsi que ses flags rouge 
             Rect_Flag[i].y = lignes[NumeroTour-1];
             SDL_RenderCopy(rendue, Flag_R, NULL, &Rect_Flag[i]);
-        } for(char i=(flag_tour[NumeroTour-1] & 0x0F);i<((flag_tour[NumeroTour-1] & 0x0F)+(flag_tour[NumeroTour-1] >> 4));i++){
+        } for(char i=(flag_tour[NumeroTour-1] & 0x0F);i<((flag_tour[NumeroTour-1] & 0x0F)+(flag_tour[NumeroTour-1] >> 4));i++){ //et blanc
             Rect_Flag[i].y = lignes[NumeroTour-1];
             SDL_RenderCopy(rendue, Flag_W, NULL, &Rect_Flag[i]);
         }
         
     }
-    SDL_RenderPresent(rendue);
+    SDL_RenderPresent(rendue);                                                                                  //on affiche le rendue apres avoir copier dedans ce qu'ont voulait
 }
 
-void SDL_Printf(const char* message,unsigned char ligne){
-    SDL_Color C_Black;C_Black.a = 255;C_Black.r = 0;C_Black.g = 0;C_Black.b = 0;
-    SDL_Rect Rect_Text;
-    SDL_Surface *SurTexte=NULL;
-    SDL_Texture *Texte=NULL;
-    TTF_Font *police=NULL;
-    switch(ligne){
+void SDL_Printf(const char* message, unsigned char ligne){
+    SDL_Color C_Black;C_Black.a = 255;C_Black.r = 0;C_Black.g = 0;C_Black.b = 0;                                //on creer une couleur pour le texte (ici noir)
+    SDL_Rect Rect_Text;                                                                                         //on initialise un rectangle pour placer le texte
+    SDL_Texture *Texte=NULL;                                                                                    //on initialise une texture
+    TTF_Font *police=NULL;                                                                                      //on initialise une police
+    switch(ligne){                                                                                              //on verifie dans quelle ligne il faut ecrire
+        //ecrire dans la ligne 1
         case 1:
-            police = TTF_OpenFont("Polices/arial.ttf",20);
-            if(!police) ExitErreurSDL("erreur creation police");
-            printf("%s\n",message);
-            SurTexte = TTF_RenderText_Solid(police, message, C_Black);
-            if (!SurTexte) ExitErreurSDL("creation de Surtexte");
-            Texte = SDL_CreateTextureFromSurface(rendue, SurTexte);
-            if (!Texte) ExitErreurSDL("creation de Texte");
-            SDL_FreeSurface(SurTexte);
-            SDL_QueryTexture(Texte,NULL,NULL,&Rect_Text.w,&Rect_Text.h);
+            police = TTF_OpenFont("Polices/arial.ttf",20);                                                      //mise de la police voulue pour cette ligne (arial)
+            if(!police) ExitErreurSDL("erreur creation police");                                                //si la police n'a pas ete creer on sort en erreur
+            image = TTF_RenderText_Solid(police, message, C_Black);                                             //on creer une surface a partir du message voule et de la police
+            if (!image) ExitErreurSDL("creation de Surtexte");                                                  //si pas de surface on sort
+            Texte = SDL_CreateTextureFromSurface(rendue, image);                                                //on creer une texture a partir de cette surface et du rendue 
+            if (!Texte) ExitErreurSDL("creation de Texte");                                                     //si pas de texture on sort
+            SDL_FreeSurface(image);                                                                             //on libere en memoire la surface
+            SDL_QueryTexture(Texte,NULL,NULL,&Rect_Text.w,&Rect_Text.h);                                        //on recupere cette texture et on creer son rectangle (weidth et heigth)
+            /*
+            *   centrage du texte dans la zone correspondante explication avec un exemple du calcul :
+            *   on veut centrer l'image cercle dans l'image fond
+            *   on recupere comme coordonnee pour le cercle :
+            *   fond.x + ((fond.w-cercle.w)/2)      --->        coordonnee X
+            *   fond.y + ((fond.h-cercle.h)/2)      --->        coordonnee Y
+            */
             Rect_Text.x = 275 + ((455-Rect_Text.w)/2);
             Rect_Text.y = 516 + ((39-Rect_Text.h)/2);
-            SDL_RenderCopy(rendue,Texte,NULL,&Rect_Text);
-            SDL_RenderPresent(rendue);
-            break;
+            SDL_RenderCopy(rendue,Texte,NULL,&Rect_Text);                                                       //on copie la texture dans le rendue avec son rectangle donnant les coordonnee
+            SDL_RenderPresent(rendue);                                                                          //on affiche le rendue
+            break;  
+        //ecrire dans la ligne 2
         case 2:
-            police = TTF_OpenFont("Polices/BabySchoolItalic.ttf",20);
-            if(!police) ExitErreurSDL("erreur creation police");
-            printf("%s\n",message);
-            TTF_SetFontStyle(police, TTF_STYLE_UNDERLINE);
-            SurTexte = TTF_RenderText_Solid(police, message, C_Black);
-            if (!SurTexte) ExitErreurSDL("creation de Surtexte");
-            Texte = SDL_CreateTextureFromSurface(rendue, SurTexte);
+            police = TTF_OpenFont("Polices/BabySchoolItalic.ttf",20);                                           //mise de la police voulue pour cette ligne (BabySchoolItalic car elle est plus propre pour mettre en gras que de mettre la police arial en gras)      
+            if(!police) ExitErreurSDL("erreur creation police");                                                //si pas de police on sort
+            TTF_SetFontStyle(police, TTF_STYLE_UNDERLINE);                                                      //on souligne le texte
+            image = TTF_RenderText_Solid(police, message, C_Black);                                             //la suite est comme la ligne 1
+            if (!image) ExitErreurSDL("creation de Surtexte");
+            Texte = SDL_CreateTextureFromSurface(rendue, image);
             if (!Texte) ExitErreurSDL("creation de Texte");
-            SDL_FreeSurface(SurTexte);
+            SDL_FreeSurface(image);
             SDL_QueryTexture(Texte,NULL,NULL,&Rect_Text.w,&Rect_Text.h);
             Rect_Text.x = 275 + ((455-Rect_Text.w)/2);
             Rect_Text.y = 555 + ((39-Rect_Text.h)/2);
@@ -267,24 +274,30 @@ void SetUpRectangles(void){
 }
 
 unsigned char RecupTouche_B_SDL(void){
-    extern unsigned char NumeroTour;
-    while(SDL_WaitEvent(&event)){
-        switch(event.type){
+    extern unsigned char NumeroTour;                            //on recupere le numero du tour pour la localisation des cercles du tour actuel
+    while(SDL_WaitEvent(&event)){                               //tant qu'il n'y a pas d'event on boucle a l'infini
+        switch(event.type){                                     //on regarde quelle event c'est passer
+            //si on appuie sur la croix rouge
             case SDL_QUIT:
-                ExitSDL();
+                ExitSDL();                                      //on ferme la SDL
                 exit(EXIT_SUCCESS);
                 break;
+            //si on appuie sur le clavier on retourne la valeur correspondante
             case SDL_KEYDOWN:
                 switch(event.key.keysym.sym){
-                    case SDLK_RIGHT:
+                    //touche fleche droite
+                    case SDLK_RIGHT:    
                         return t_droite;
                         break;
+                    //touche fleche gauche
                     case SDLK_LEFT:
                         return t_gauche;
                         break;
+                    //touche entree
                     case SDLK_RETURN:
                         return t_entree;
                         break;
+                    //touche espace
                     case SDLK_SPACE:
                         return t_espace;
                         break;                  
@@ -293,6 +306,7 @@ unsigned char RecupTouche_B_SDL(void){
                         break;
                 }
                 break;
+            //si on clique avec la souris on localise le clique et on renvoie ce a quoi ca correspond (on retourne appuie si on a pas cliquer sur quelquechose d'interactif dan le jeu)
             case SDL_MOUSEBUTTONDOWN:
                 if((event.button.x >= colonnes[0])&&(event.button.y >= lignes[0])&&(event.button.x <= (colonnes[0] + Rect_Code[0].w))&&(event.button.y <= (lignes[0] + Rect_Code[0].h))) return appuie_code1;
                 else if((event.button.x >= colonnes[0])&&(event.button.y >= lignes[1])&&(event.button.x <= (colonnes[0] + Rect_Code[1].w))&&(event.button.y <= (lignes[1] + Rect_Code[1].h))) return appuie_code2;
@@ -305,7 +319,6 @@ unsigned char RecupTouche_B_SDL(void){
                 else if((event.button.x >= colonnes[4])&&(event.button.y >= lignes[NumeroTour-1])&&(event.button.x <= (colonnes[4] + Rect_Code[3].w))&&(event.button.y <= (lignes[NumeroTour-1] + Rect_Code[3].h))) return appuie_Tour4;
                 else return appuie;
                 break;
-            case SDL_MOUSEMOTION:
             default:
                 break;
         }
@@ -338,11 +351,12 @@ void SetUpPositions(void){
 
 void CreationTexture(void){
     //cercles
-    image = SDL_LoadBMP("img/Cercles/Cercle_Couleur_B.bmp");
-    if (!image) ExitErreurSDL("creation de Cercle_Couleur_B");
-    cercleB = SDL_CreateTextureFromSurface(rendue,image);
-    SDL_FreeSurface(image);
-    if (!cercleB) ExitErreurSDL("creation de la texture Cercle_Couleur_B");
+    image = SDL_LoadBMP("img/Cercles/Cercle_Couleur_B.bmp");                    //on charge l'image en tant que surface
+    if (!image) ExitErreurSDL("creation de Cercle_Couleur_B");                  //si pas de surface creer (non NULL) on sort en erreurs
+    cercleB = SDL_CreateTextureFromSurface(rendue,image);                       //on creer la texture via cette surface
+    SDL_FreeSurface(image);                                                     //on libere en memoire la surface
+    if (!cercleB) ExitErreurSDL("creation de la texture Cercle_Couleur_B");     //si la texture n'a pas ete creer on sort
+                                                                                //la suite fonctionne de la meme maniere
     image = SDL_LoadBMP("img/Cercles/Cercle_Couleur_G.bmp");
     if (!image) ExitErreurSDL("creation de Cercle_Couleur_G");
     cercleG = SDL_CreateTextureFromSurface(rendue,image);

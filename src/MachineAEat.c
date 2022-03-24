@@ -1,13 +1,13 @@
-//fichiers generaux
-#include <stdio.h>
-#include <conio.h>
-#include <stdlib.h>
-#include <time.h>
-//nos fichiers 
-#include <MachineAEtat.h>
-#include <Fonctions.h>
-#include <Define.h>
-#include <Affichage.h>
+//include
+    //natif au C
+        #include <stdlib.h>
+        #include <time.h>
+    //nos fichiers 
+        #include <MachineAEtat.h>
+        #include <Fonctions.h>
+        #include <Define.h>
+        #include <Affichage.h>
+//
 
 code_t possibilites[625];                                                                                           //tableau sauvegardant toutes les possibilite lors de la resolution automatique
 code_t tour_passe[12];                                                                                              //stockage des differents tours
@@ -15,7 +15,6 @@ unsigned char resol, getter, NumeroTour, flag_bon, retry, bool_victoire, etape_a
 unsigned char flag_tour[12], tour[4], code[4];                                                                      //stockage des drapeaux, stockage du tour actuel, stockage du code de la partie
 
 
-//fonction de transition entre les etats
 Etat_t Next_State(Etat_t CurrentState){
     Etat_t Next_State = CurrentState;                                                                               //sauvegarde de l'etat precedent au cas ou
     switch(CurrentState){
@@ -74,8 +73,6 @@ Etat_t Next_State(Etat_t CurrentState){
     return Next_State;
 }
 
-
-//fonction decrivant ce que doit faire la machine a etat lorsque elle est dans tel ou tel etat
 void Current_State(Etat_t etat_courant){
     unsigned char while_bool = 1, gen;                                                                              //while bool permet de sortir de certain while selon certaine condition, gen sert a determiner si la generation du code est manuelle ou aleatoire
     switch(etat_courant){
