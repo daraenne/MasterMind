@@ -8,11 +8,9 @@
 
 //fenetre
 SDL_Window *fenetre = NULL;
-SDL_Texture *screenshot = NULL;
 //rendue
 SDL_Renderer *rendue = NULL;
-SDL_Renderer *rendueDeplacement = NULL;
-//surface
+//surface (seras liberer juste apres avoire creer la texture correpondante)
 SDL_Surface *image = NULL;
 //textures
 //cercles
@@ -30,7 +28,6 @@ SDL_Texture *Fond = NULL;
 //rectangles pour textures
 SDL_Rect Rect_Fond;
 SDL_Rect Rect_cercleDeplacement;
-SDL_Rect Rect_Screenshot;
 SDL_Rect Rect_Code[4];
 SDL_Rect Rect_Flag[4];
 SDL_Rect Rect_Tour[4];
@@ -41,14 +38,11 @@ uint16_t colonnes[9];
 SDL_Event event;
 
 void InitSDL(void){
-    //printf("init SDL\n");
     if (SDL_Init(SDL_INIT_VIDEO) != 0) ExitErreurSDL("Init");
     if (TTF_Init() != 0) ExitErreurSDL("Init texte");
 
-    //printf("crea window\n");
     fenetre = SDL_CreateWindow("Jeux du MasterMind", 2, 30, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
     if (!fenetre) ExitErreurSDL("creation de fenetre");
-    //printf("crea rendue\n");
     rendue = SDL_CreateRenderer(fenetre, -1, SDL_RENDERER_ACCELERATED);
     if (!rendue) ExitErreurSDL("creation rendue");
     SDL_RenderPresent(rendue);
@@ -59,14 +53,12 @@ void InitSDL(void){
 }
 
 void ExitSDL(void){
-    //printf("exit SDL\n");
     SDL_DestroyRenderer(rendue);
     SDL_DestroyWindow(fenetre);
     SDL_Quit();
 }
 
 void ExitErreurSDL(const char* location){
-    //printf("erreur SDL\n");
     SDL_Log("ERREUR :%s > %s\n", location, SDL_GetError());
     ExitSDL();
     exit(EXIT_FAILURE);
@@ -77,10 +69,8 @@ void affichage(void){
     extern code_t tour_passe[12];
     extern unsigned char flag_tour[12], tour[4], code[4];
     unsigned char k;
-    //printf("affichage\n");
     SDL_RenderCopy(rendue, Fond, NULL, &Rect_Fond);
     if((etape_affichage > 0) && (Automatique)){
-        //printf("affichage code\n");
         for(char i=0;i<4;i++){
             switch (code[i]){
                 case 0:
@@ -225,7 +215,6 @@ void SDL_Printf(const char* message,unsigned char ligne){
         case 1:
             police = TTF_OpenFont("Polices/arial.ttf",20);
             if(!police) ExitErreurSDL("erreur creation police");
-            //x=275 || y=516
             printf("%s\n",message);
             SurTexte = TTF_RenderText_Solid(police, message, C_Black);
             if (!SurTexte) ExitErreurSDL("creation de Surtexte");
@@ -233,7 +222,6 @@ void SDL_Printf(const char* message,unsigned char ligne){
             if (!Texte) ExitErreurSDL("creation de Texte");
             SDL_FreeSurface(SurTexte);
             SDL_QueryTexture(Texte,NULL,NULL,&Rect_Text.w,&Rect_Text.h);
-            //centrage du texte dans la boite de dialogue
             Rect_Text.x = 275 + ((455-Rect_Text.w)/2);
             Rect_Text.y = 516 + ((39-Rect_Text.h)/2);
             SDL_RenderCopy(rendue,Texte,NULL,&Rect_Text);
@@ -242,7 +230,6 @@ void SDL_Printf(const char* message,unsigned char ligne){
         case 2:
             police = TTF_OpenFont("Polices/BabySchoolItalic.ttf",20);
             if(!police) ExitErreurSDL("erreur creation police");
-            //x=275 || y=555
             printf("%s\n",message);
             TTF_SetFontStyle(police, TTF_STYLE_UNDERLINE);
             SurTexte = TTF_RenderText_Solid(police, message, C_Black);
@@ -251,7 +238,6 @@ void SDL_Printf(const char* message,unsigned char ligne){
             if (!Texte) ExitErreurSDL("creation de Texte");
             SDL_FreeSurface(SurTexte);
             SDL_QueryTexture(Texte,NULL,NULL,&Rect_Text.w,&Rect_Text.h);
-            //centrage du texte dans la boite de dialogue
             Rect_Text.x = 275 + ((455-Rect_Text.w)/2);
             Rect_Text.y = 555 + ((39-Rect_Text.h)/2);
             SDL_RenderCopy(rendue,Texte,NULL,&Rect_Text);
