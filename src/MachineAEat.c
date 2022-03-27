@@ -11,7 +11,7 @@
 
 code_t possibilites[625];                                                                                           //tableau sauvegardant toutes les possibilite lors de la resolution automatique
 code_t tour_passe[12];                                                                                              //stockage des differents tours
-unsigned char resol, getter, NumeroTour, flag_bon, retry, bool_victoire, etape_affichage, Automatique;
+unsigned char resol, getter, NumeroTour, flag_bon, retry, bool_victoire, etape_affichage, Automatique, gen;
 unsigned char flag_tour[12], tour[4], code[4];                                                                      //stockage des drapeaux, stockage du tour actuel, stockage du code de la partie
 
 
@@ -74,7 +74,7 @@ Etat_t Next_State(Etat_t CurrentState){
 }
 
 void Current_State(Etat_t etat_courant){
-    unsigned char while_bool = 1, gen;                                                                              //while bool permet de sortir de certain while selon certaine condition, gen sert a determiner si la generation du code est manuelle ou aleatoire
+    unsigned char while_bool = 1;                                                                                   //while bool permet de sortir de certain while selon certaine condition, gen sert a determiner si la generation du code est manuelle ou aleatoire
     switch(etat_courant){
         //etat Init
         case Init:
