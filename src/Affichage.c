@@ -277,6 +277,8 @@ void SetUpRectangles(void){
 
 unsigned char RecupTouche_B_SDL(void){
     extern unsigned char NumeroTour;                            //on recupere le numero du tour pour la localisation des cercles du tour actuel
+    char* nomFichier = "Sauvegarde1";                           //initialisation du nom du fichier de sauvegarde
+                    char while_bool=1,choixNom=0;               //creation d'une bool pour le while et de la variable de choix de nom
     while(SDL_WaitEvent(&event)){                               //tant qu'il n'y a pas d'event on boucle a l'infini
         switch(event.type){                                     //on regarde quelle event c'est passer
             //si on appuie sur la croix rouge
@@ -320,16 +322,61 @@ unsigned char RecupTouche_B_SDL(void){
                 else if((event.button.x >= colonnes[3])&&(event.button.y >= lignes[NumeroTour-1])&&(event.button.x <= (colonnes[3] + Rect_Code[2].w))&&(event.button.y <= (lignes[NumeroTour-1] + Rect_Code[2].h))) return appuie_Tour3;
                 else if((event.button.x >= colonnes[4])&&(event.button.y >= lignes[NumeroTour-1])&&(event.button.x <= (colonnes[4] + Rect_Code[3].w))&&(event.button.y <= (lignes[NumeroTour-1] + Rect_Code[3].h))) return appuie_Tour4;
                 else if((event.button.x >= 197)&&(event.button.y >= 370)&&(event.button.x <= 334)&&(event.button.y <= 426)) {
-                    //load
-                    return appuie;
+                    while(while_bool){
+                        if(SDL_WaitEvent(&event)){                                                                                      
+                            //on affiche la demande
+                            affichage();
+                            SDL_Printf("emplacement de sauvegarde :",1);
+                            SDL_Printf(nomFichier,2);
+                            //on choisie le nom ()
+                            switch(event.type){
+                                case SDL_KEYDOWN :
+                                    switch(event.key.keysym.sym){
+                                    //touche fleche haut
+                                    case SDLK_UP:
+                                        choixNom++;
+                                        if(choixNom == 5) choixNom=0;
+                                        break;
+                                    //touche fleche bas
+                                    case SDLK_DOWN:
+                                        choixNom--;
+                                        if(choixNom == -1) choixNom=4;
+                                        break;
+                                    //touche entree
+                                    case SDLK_RETURN:
+                                        while_bool = 0;
+                                        break;
+                                    }
+                                    break; 
+                            }
+                            //on remplie la variable pour le nom avec celui choisie
+                            switch(choixNom){
+                                case 0 :
+                                    nomFichier = "Sauvegarde1";
+                                    break;
+                                case 1 :
+                                    nomFichier = "Sauvegarde2";
+                                    break;
+                                case 2 :
+                                    nomFichier = "Sauvegarde3";
+                                    break;
+                                case 3 :
+                                    nomFichier = "Sauvegarde4";
+                                    break;
+                                case 4 :
+                                    nomFichier = "Sauvegarde5";
+                                    break;
+                            } 
+                        }
+                    }
+                    LectureInstruction(nomFichier);                                                                                         //on regarde dans le fichier choisie
+                    return chargement;
                 } else if((event.button.x >= 197)&&(event.button.y >= 286)&&(event.button.x <= 334)&&(event.button.y <= 342)) {             //sauvegarde
-                    char* nomFichier = "Sauvegarde1";                                                                                       //initialisation du nom du fichier de sauvegarde
-                    char while_bool=1,choixNom=0;                                                                                           //creation d'une bool pour le while et de la variable de choix de nom
                     while(while_bool){                                                                                                      //tant qu'ont a pas choisie on boucle
                         if(SDL_WaitEvent(&event)){                                                                                      
                             //on affiche la demande
                             affichage();
-                            SDL_Printf("emplacement de sauvegarde (5max) :",1);
+                            SDL_Printf("emplacement de sauvegarde :",1);
                             SDL_Printf(nomFichier,2);
                             //on choisie le nom ()
                             switch(event.type){
@@ -373,7 +420,7 @@ unsigned char RecupTouche_B_SDL(void){
                         }
                     }
                     SauvegardePartie(nomFichier);                                                                                           //on sauvegarde dans le fichier choisie
-                    return appuie;
+                    return sauvegarde;
                 } else return appuie;
                 break;
             default:

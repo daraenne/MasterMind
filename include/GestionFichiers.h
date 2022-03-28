@@ -7,7 +7,7 @@
 //
 
 
-void LectureInstruction(void);                                              //fonctions qui va regarder un fichier de sauvegarde et charger la partie
+void LectureInstruction(char* nomSauvegarde);                               //fonctions qui va regarder un fichier de sauvegarde et charger la partie
 void SauvegardePartie(char* nomSauvegarde);                                 //fonctions qui va sauvegarder une partie dans un fichiers qui a comme nom ce qu'ont lui rentre en parametre
 
 

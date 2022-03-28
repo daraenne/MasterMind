@@ -17,6 +17,8 @@
         #define appuie_Tour3        0xA6
         #define appuie_Tour4        0xA7
         #define appuie              0xA8
+        #define chargement          0xA9
+        #define sauvegarde          0xB
 //
 
 typedef enum Etat{Init, Tour, Correspondance, Fin, Resolution_Manuelle}Etat_t;                              //enum pour les etats                
