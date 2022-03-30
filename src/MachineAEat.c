@@ -16,7 +16,6 @@ unsigned char flag_tour[12], tour[4], code[4];                                  
 
 
 Etat_t Next_State(Etat_t CurrentState){
-changement_etat :                                                                                                   //encre pour revenir apres un load    
     Etat_t Next_State = CurrentState;                                                                               //sauvegarde de l'etat precedent au cas ou
     switch(CurrentState){
         //etat precedent = Init
@@ -50,9 +49,8 @@ changement_etat :                                                               
                 do{                                                                                                 //on bloque tant que le joueur na pas appuiez sur espace
                     affichage();
                     SDL_Printf("tour suivant : tapez espace ...",1);
-                    getter = 0;
                     getter = RecupTouche_B_SDL();
-                    if (getter == chargement) goto changement_etat;
+                    if (getter == chargement) goto chargement_Partie;
                 }while((getter != t_espace)&&(getter != appuie));
                 Next_State = Correspondance;                                                                        //on envoie sur l'etape de verification de la correspondance des possibilites
             }
@@ -73,10 +71,10 @@ changement_etat :                                                               
             break;
     }
     return Next_State;
+chargement_Partie :                                                                                                 //encre pour revenir apres un load    
 }
 
 void Current_State(Etat_t etat_courant){
-changement_etat :                                                                                                   //encre pour revenir apres un load
     unsigned char while_bool = 1;                                                                                   //while bool permet de sortir de certain while selon certaine condition, gen sert a determiner si la generation du code est manuelle ou aleatoire
     switch(etat_courant){
         //etat Init
@@ -90,13 +88,13 @@ changement_etat :                                                               
             for(char i=0;i<4;i++)tour[i] = 0;
             for(char i=0;i<4;i++)code[i] = 0;
 
+            affichage();
+            SDL_Printf("resolution manuelle <> automatique ",1);
+            SDL_Printf("automatique",2);
             resol = 1;
             while(while_bool){                                                                                      //choix resolution manuelle ou automatique (choix par defaut : automatique)
-                affichage();
-                SDL_Printf("resolution manuelle <> automatique ",1);
-                SDL_Printf("automatique",2);
                 getter = RecupTouche_B_SDL();
-                if (getter == chargement) goto changement_etat;
+                if (getter == chargement) goto chargement_Partie;
                 switch(getter){
                     case t_entree:                                                                                  //si le joueur appuie sur entree ou valider le choix est finis et on sort de la boucle
                         while_bool = 0;
@@ -116,13 +114,13 @@ changement_etat :                                                               
                 }
             }while_bool = 1;
 
+            affichage();
+            SDL_Printf("generation du code : manuelle <> aleatoire",1);
+            SDL_Printf("manuelle",2);
             gen = 1;
             while(while_bool){                                                                                      //choix entre generation a la main ou random
-                affichage();
-                SDL_Printf("generation du code : manuelle <> aleatoire",1);
-                SDL_Printf("manuelle",2);
                 getter = RecupTouche_B_SDL();
-                if (getter == chargement) goto changement_etat;
+                if (getter == chargement) goto chargement_Partie;
                 switch (getter){
                     case t_entree:                                                                                  //si le joueur appuie sur entree ou valider le choix est finis et on sort de la boucle
                         while_bool = 0;
@@ -149,35 +147,27 @@ changement_etat :                                                               
                     affichage();
                     SDL_Printf("selectionnez le code puis validez",1);
                     getter = RecupTouche_B_SDL();
-                    if (getter == chargement) goto changement_etat;
+                    if (getter == chargement) goto chargement_Partie;
                     switch(getter){
                         //le joueur appuie sur la case 1 du code
                         case appuie_code1:
                             code[0]++;                                                                              //modification de la valeur du code (un appuie = +1 et si le code depasse la valeur max on remet a 0)
                             if(code[0]==5) code[0] = 0;
-                            affichage();
-                            SDL_Printf("selectionnez le code puis validez",1);
                             break;
                         //le joueur appuie sur la case 2 du code
                         case appuie_code2:
                             code[1]++;
                             if(code[1]==5) code[1] = 0;
-                            affichage();
-                            SDL_Printf("selectionnez le code puis validez",1);
                             break;
                         //le joueur appuie sur la case 3 du code
                         case appuie_code3:
                             code[2]++;
                             if(code[2]==5) code[2] = 0;
-                            affichage();
-                            SDL_Printf("selectionnez le code puis validez",1);
                             break;
                         //le joueur appuie sur la case 4 du code
                         case appuie_code4:
                             code[3]++;
                             if(code[3]==5) code[3] = 0;
-                            affichage();
-                            SDL_Printf("selectionnez le code puis validez",1);
                             break;
                     }
                 }while(getter != t_entree);
@@ -187,12 +177,12 @@ changement_etat :                                                               
                     for(unsigned char i=0;i<4;i++)code[i] = rand()%5;                                               //mise d'une valeur aleatoire entre 0 et 5 pour chaque valeur du code
                     etape_affichage = 1;                                                                            
                     while_bool = 0;
+                    affichage();
+                    SDL_Printf("regenerer le code : oui <> non",1);
+                    SDL_Printf("non",2);
                     while(1){                                                                                       //on laisse au joueur la possibilite de regenerer ou non le code
-                        affichage();
-                        SDL_Printf("regenerer le code : oui <> non",1);
-                        SDL_Printf("non",2);
                         getter = RecupTouche_B_SDL();
-                        if (getter == chargement) goto changement_etat;
+                        if (getter == chargement) goto chargement_Partie;
                         if(getter == t_droite){
                             while_bool = 0;
                             affichage();
@@ -245,31 +235,23 @@ changement_etat :                                                               
                 affichage();
                 SDL_Printf("selectionnez le code pour le tour puis validez",1);
                 getter = RecupTouche_B_SDL();
-                if (getter == chargement) goto changement_etat;
+                if (getter == chargement) goto chargement_Partie;
                 switch(getter){                                                                                     //selection du tour la selection marche de la meme maniere que la genration manuelle du code
                     case appuie_Tour1:
                         tour[0]++;
                         if(tour[0]==5) tour[0] = 0;
-                        affichage();
-                        SDL_Printf("selectionnez le code puis validez",1);
                         break;
                     case appuie_Tour2:
                         tour[1]++;
                         if(tour[1]==5) tour[1] = 0;
-                        affichage();
-                        SDL_Printf("selectionnez le code puis validez",1);
                         break;
                     case appuie_Tour3:
                         tour[2]++;
                         if(tour[2]==5) tour[2] = 0;
-                        affichage();
-                        SDL_Printf("selectionnez le code puis validez",1);
                         break;
                     case appuie_Tour4:
                         tour[3]++;
                         if(tour[3]==5) tour[3] = 0;
-                        affichage();
-                        SDL_Printf("selectionnez le code puis validez",1);
                         break;
                 }
             }while(getter != t_entree);
@@ -335,16 +317,21 @@ changement_etat :                                                               
         case Fin:
             //affichage fin de partie victoire ou defaite
             if(!bool_victoire){
-                SDL_Printf("vous avez depasse 12 tours",1);
+                do{                                                                                                 //on bloque tant que le joueur na pas appuiez sur espace
+                    affichage();
+                    SDL_Printf("vous avez depasse 12 tours (pressez espace)",1);
+                    getter = RecupTouche_B_SDL();
+                    if (getter == chargement) goto chargement_Partie;
+                }while(getter != t_espace);
             }
             //menu pour quiter ou recommencer
+            affichage();
+            SDL_Printf("replay <> quit :",1);
+            SDL_Printf("replay",2);
+            retry = 1;
             while(while_bool){
-                affichage();
-                SDL_Printf("replay <> quit :",1);
-                SDL_Printf("replay",2);
-                retry = 1;
                 getter = RecupTouche_B_SDL();
-                if (getter == chargement) goto changement_etat;
+                if (getter == chargement) goto chargement_Partie;
                 switch (getter){
                     case t_entree:
                         while_bool = 0;
@@ -365,4 +352,5 @@ changement_etat :                                                               
             } while_bool = 1;
             break;
     }
+chargement_Partie :                                                                                                 //encre pour revenir apres un load    
 }
