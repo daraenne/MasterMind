@@ -10,16 +10,19 @@
         #include <Define.h>
         #include <MachineAEtat.h>
         #include <Affichage.h>
+        #include <GestionFichiers.h>
 //
 
-//main du programme (simople boucle infini sur la machine a etat)
+
+//main du programme (simple boucle infini sur la machine a etat)
 int main(int argc,char **argv){
-    InitSDL();                                          //initialisation de la SDL
-    Etat_t etat_courant = Init;                         //initialisation de la machine a etat
-    while(1){                                           //machine a etat
+    InitSDL();                                           //initialisation de la SDL
+    etat_courant = Init;                                 //initialisation de la machine a etat
+    while(1){                                            //machine a etat
         Current_State(etat_courant);
         etat_courant = Next_State(etat_courant);
     }
+    
     //ne seras jamais utiliser
     return EXIT_SUCCESS;
 }

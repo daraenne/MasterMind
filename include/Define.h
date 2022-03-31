@@ -17,9 +17,12 @@
         #define appuie_Tour3        0xA6
         #define appuie_Tour4        0xA7
         #define appuie              0xA8
+        #define chargement          0xA9
+        #define sauvegarde          0xB0
 //
 
 typedef enum Etat{Init, Tour, Correspondance, Fin, Resolution_Manuelle}Etat_t;                              //enum pour les etats                
 typedef struct {unsigned char pos1; unsigned char pos2; unsigned char pos3; unsigned char pos4;}code_t;     //structure pour les codes
+Etat_t etat_courant;                                                                                        //variable pour les etats (declarer ici car utilisr dans plusieurs fichiers)
 
 #endif // !Define_H

@@ -1,8 +1,10 @@
-//fichiers generaux
-#include <stdio.h>
-//mes fichiers
-#include <Fonctions.h>
-#include <Define.h>
+//include
+    //fichiers generaux
+        #include <stdio.h>
+    //mes fichiers
+        #include <Fonctions.h>
+        #include <Define.h>
+//
 
 unsigned char test_valid(unsigned char test[], unsigned char code[]){
     unsigned char flags, code_val[4], test_val[4], r_flag = 0, w_flag = 0;
