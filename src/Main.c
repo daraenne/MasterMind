@@ -10,7 +10,6 @@
         #include <Define.h>
         #include <MachineAEtat.h>
         #include <Affichage.h>
-        #include <GestionFichiers.h>
 //
 
 
