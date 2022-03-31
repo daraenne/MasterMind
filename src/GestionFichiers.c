@@ -13,7 +13,6 @@ FILE *fichier = NULL;                                                           
 //on recupere les variables importantes du programme
 extern unsigned char NumeroTour, flag_tour[12], tour[4], code[4];
 extern code_t tour_passe[12];   
-extern Etat_t etat_courant;
 //variable de resolution de probleme temporaires
 unsigned char bufferTour[4], bufferFlag;
 
@@ -23,7 +22,6 @@ void LectureInstruction(char* nomSauvegarde){
     char fd[255] = "Sauvegardes/";
     strncat(fd,nomSauvegarde,40);
     fichier = fopen(fd,"r");                                                                                //on ouvre le fichier en lecture seul
-
     char STRFichier[100];                                                                                   //string qui prendras les differentes lignes
     //date/heure
     fgets(STRFichier,100,fichier);
@@ -32,43 +30,24 @@ void LectureInstruction(char* nomSauvegarde){
     //code
     fgets(STRFichier,100,fichier);
     fscanf(fichier,"%1d%1d%1d%1d\n",&code[0],&code[1],&code[2],&code[3]);
-    //printf("%d %d %d %d\n",code[0],code[1],code[2],code[3]);
     //numero du tour
     fgets(STRFichier,100,fichier);
     fscanf(fichier,"%02d\n",&NumeroTour);
-    //recuperation de l'etat
-    fgets(STRFichier,100,fichier);
-    fgets(STRFichier,100,fichier);
-    if(strcmp(STRFichier,"Init\n") == 0) etat_courant = Init;
-    else if (strcmp(STRFichier,"Tour\n") == 0) {
-        etat_courant = Tour;
-        etat_tour = 1;
-    } else if (strcmp(STRFichier,"Correspondance\n") == 0) etat_courant = Correspondance;
-    else if (strcmp(STRFichier,"Fin\n") == 0) etat_courant = Fin;
-    else if (strcmp(STRFichier,"Resolution_Manuelle\n") == 0) {
-        etat_courant = Resolution_Manuelle;
-        etat_tour = 1;
-    } else {
-        exit(EXIT_FAILURE);                                                                                 //erreur lors du chargement de l'etat
-    }
+    //recuperation de l'etat forcement resolution manuelle car on ne sauvegarde pas de partie automatique
+    etat_courant = Resolution_Manuelle;
     //recuperation partie si entame
     fgets(STRFichier,100,fichier);
     for (char i=0; i<NumeroTour; i++){
         if(i == (NumeroTour-1)) {
-            //fscanf(fichier,"%1d%1d%1d%1d %02x\n",&tour[0],&tour[1],&tour[2],&tour[3],&flag_tour[i]);
             fscanf(fichier,"%1d%1d%1d%1d %02x\n",&bufferTour[0],&bufferTour[1],&bufferTour[2],&bufferTour[3],&bufferFlag);
             for(char j=0;j<4;j++) tour[j]=bufferTour[j];
             flag_tour[i] = bufferFlag;
-            //printf("%1d%1d%1d%1d %02x\n",tour[0],tour[1],tour[2],tour[3],flag_tour[i]);
-            //printf("test\n");
         } else {
             fscanf(fichier,"%1d%1d%1d%1d %02x\n",&tour_passe[i].pos1,&tour_passe[i].pos2,&tour_passe[i].pos3,&tour_passe[i].pos4,&flag_tour[i]);
-            //printf("%1d%1d%1d%1d %02x\n",tour_passe[i].pos1,tour_passe[i].pos2,tour_passe[i].pos3,tour_passe[i].pos4,flag_tour[i]);
         }
-        //printf("%d %d %d %d\n",code[0],code[1],code[2],code[3]);
     }
     fclose(fichier);
-    if (etat_tour) NumeroTour--;                                                                            //pour eviter de sauter un tour car lorsqu'ont revient dans Tour ou Resolution_Manuelle le numero du tour augmente
+    NumeroTour--;                                                                                           //pour eviter de sauter un tour car la sauvegarde se passant lors du tour : NumeroTour; lorsqu'ont revient au debut de l'etat resolution... on augment NumeroTour de 1
 }
 
 void SauvegardePartie(char* nomSauvegarde){
@@ -76,7 +55,6 @@ void SauvegardePartie(char* nomSauvegarde){
     char fd[255] = "Sauvegardes/";
     strncat(fd,nomSauvegarde,40);
     fichier = fopen(fd,"w");                                                                                //on ouvre le fichier en ecritures seul (et on le creer si il n'existe pas)
-
     //ecriture dans le fichier
     //ecriture date
     time_t now;
@@ -88,24 +66,6 @@ void SauvegardePartie(char* nomSauvegarde){
     fprintf(fichier,"code : \n%1d%1d%1d%1d\n",code[0],code[1],code[2],code[3]);
     //sauvegarde du numero du tour
     fprintf(fichier,"numero du tour : \n%02d\n",NumeroTour);
-    //sauvegarde de l'etat
-    switch(etat_courant){
-        case Init :
-            fprintf(fichier,"etat (mettre Tour pour resolution automatique sinon Resolution_Manuelle): \nInit\n");
-            break;
-        case Tour : 
-            fprintf(fichier,"etat (mettre Tour pour resolution automatique sinon Resolution_Manuelle): \nTour\n");
-            break;
-        case Correspondance :
-            fprintf(fichier,"etat (mettre Tour pour resolution automatique sinon Resolution_Manuelle): \nCorrespondance\n");
-            break;
-        case Fin :
-            fprintf(fichier,"etat (mettre Tour pour resolution automatique sinon Resolution_Manuelle): \nFin\n");
-            break;
-        case Resolution_Manuelle :
-            fprintf(fichier,"etat (mettre Tour pour resolution automatique sinon Resolution_Manuelle): \nResolution_Manuelle\n");
-            break;
-    }
     //ecriture partie
     fprintf(fichier,"partie :\n");
     for (char i=1; i<=NumeroTour; i++){

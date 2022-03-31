@@ -13,8 +13,6 @@
         #include <GestionFichiers.h>
 //
 
-Etat_t etat_courant;
-
 
 //main du programme (simple boucle infini sur la machine a etat)
 int main(int argc,char **argv){

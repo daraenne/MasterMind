@@ -14,7 +14,6 @@ code_t tour_passe[12];                                                          
 unsigned char resol, getter, NumeroTour, flag_bon, retry, bool_victoire, etape_affichage, Automatique, gen;
 unsigned char flag_tour[12], tour[4], code[4];                                                                      //stockage des drapeaux, stockage du tour actuel, stockage du code de la partie
 
-
 Etat_t Next_State(Etat_t CurrentState){
     Etat_t Next_State = CurrentState;                                                                               //sauvegarde de l'etat precedent au cas ou
     switch(CurrentState){
@@ -50,7 +49,7 @@ Etat_t Next_State(Etat_t CurrentState){
                     affichage();
                     SDL_Printf("tour suivant : tapez espace ...",1);
                     getter = RecupTouche_B_SDL();
-                    if (getter == chargement) goto chargement_Partie;
+                    if (getter == chargement) return etat_courant;
                 }while((getter != t_espace)&&(getter != appuie));
                 Next_State = Correspondance;                                                                        //on envoie sur l'etape de verification de la correspondance des possibilites
             }
@@ -71,7 +70,6 @@ Etat_t Next_State(Etat_t CurrentState){
             break;
     }
     return Next_State;
-chargement_Partie :                                                                                                 //encre pour revenir apres un load    
 }
 
 void Current_State(Etat_t etat_courant){
@@ -87,14 +85,13 @@ void Current_State(Etat_t etat_courant){
             for(char i=0;i<12;i++)flag_tour[i] = 0;
             for(char i=0;i<4;i++)tour[i] = 0;
             for(char i=0;i<4;i++)code[i] = 0;
-
             affichage();
             SDL_Printf("resolution manuelle <> automatique ",1);
             SDL_Printf("automatique",2);
             resol = 1;
             while(while_bool){                                                                                      //choix resolution manuelle ou automatique (choix par defaut : automatique)
                 getter = RecupTouche_B_SDL();
-                if (getter == chargement) goto chargement_Partie;
+                if (getter == chargement) return;
                 switch(getter){
                     case t_entree:                                                                                  //si le joueur appuie sur entree ou valider le choix est finis et on sort de la boucle
                         while_bool = 0;
@@ -120,7 +117,7 @@ void Current_State(Etat_t etat_courant){
             gen = 1;
             while(while_bool){                                                                                      //choix entre generation a la main ou random
                 getter = RecupTouche_B_SDL();
-                if (getter == chargement) goto chargement_Partie;
+                if (getter == chargement) return;                
                 switch (getter){
                     case t_entree:                                                                                  //si le joueur appuie sur entree ou valider le choix est finis et on sort de la boucle
                         while_bool = 0;
@@ -147,7 +144,7 @@ void Current_State(Etat_t etat_courant){
                     affichage();
                     SDL_Printf("selectionnez le code puis validez",1);
                     getter = RecupTouche_B_SDL();
-                    if (getter == chargement) goto chargement_Partie;
+                    if (getter == chargement) return;
                     switch(getter){
                         //le joueur appuie sur la case 1 du code
                         case appuie_code1:
@@ -182,7 +179,7 @@ void Current_State(Etat_t etat_courant){
                     SDL_Printf("non",2);
                     while(1){                                                                                       //on laisse au joueur la possibilite de regenerer ou non le code
                         getter = RecupTouche_B_SDL();
-                        if (getter == chargement) goto chargement_Partie;
+                        if (getter == chargement) return;
                         if(getter == t_droite){
                             while_bool = 0;
                             affichage();
@@ -235,7 +232,7 @@ void Current_State(Etat_t etat_courant){
                 affichage();
                 SDL_Printf("selectionnez le code pour le tour puis validez",1);
                 getter = RecupTouche_B_SDL();
-                if (getter == chargement) goto chargement_Partie;
+                if (getter == chargement) return;
                 switch(getter){                                                                                     //selection du tour la selection marche de la meme maniere que la genration manuelle du code
                     case appuie_Tour1:
                         tour[0]++;
@@ -321,7 +318,7 @@ void Current_State(Etat_t etat_courant){
                     affichage();
                     SDL_Printf("vous avez depasse 12 tours (pressez espace)",1);
                     getter = RecupTouche_B_SDL();
-                    if (getter == chargement) goto chargement_Partie;
+                    if (getter == chargement) return;
                 }while(getter != t_espace);
             }
             //menu pour quiter ou recommencer
@@ -331,7 +328,7 @@ void Current_State(Etat_t etat_courant){
             retry = 1;
             while(while_bool){
                 getter = RecupTouche_B_SDL();
-                if (getter == chargement) goto chargement_Partie;
+                if (getter == chargement) return;
                 switch (getter){
                     case t_entree:
                         while_bool = 0;
@@ -352,5 +349,5 @@ void Current_State(Etat_t etat_courant){
             } while_bool = 1;
             break;
     }
-chargement_Partie :                                                                                                 //encre pour revenir apres un load    
+
 }

@@ -277,7 +277,7 @@ void SetUpRectangles(void){
 
 unsigned char RecupTouche_B_SDL(void){
     extern unsigned char NumeroTour;                            //on recupere le numero du tour pour la localisation des cercles du tour actuel
-    char* nomFichier = "Sauvegarde1";                           //initialisation du nom du fichier de sauvegarde
+    char* nomFichier = "Sauvegarde1.save";                      //initialisation du nom du fichier de sauvegarde
                     char while_bool=1,choixNom=0;               //creation d'une bool pour le while et de la variable de choix de nom
     while(SDL_WaitEvent(&event)){                               //tant qu'il n'y a pas d'event on boucle a l'infini
         switch(event.type){                                     //on regarde quelle event c'est passer
@@ -321,15 +321,19 @@ unsigned char RecupTouche_B_SDL(void){
                 else if((event.button.x >= colonnes[2])&&(event.button.y >= lignes[NumeroTour-1])&&(event.button.x <= (colonnes[2] + Rect_Code[1].w))&&(event.button.y <= (lignes[NumeroTour-1] + Rect_Code[1].h))) return appuie_Tour2;
                 else if((event.button.x >= colonnes[3])&&(event.button.y >= lignes[NumeroTour-1])&&(event.button.x <= (colonnes[3] + Rect_Code[2].w))&&(event.button.y <= (lignes[NumeroTour-1] + Rect_Code[2].h))) return appuie_Tour3;
                 else if((event.button.x >= colonnes[4])&&(event.button.y >= lignes[NumeroTour-1])&&(event.button.x <= (colonnes[4] + Rect_Code[3].w))&&(event.button.y <= (lignes[NumeroTour-1] + Rect_Code[3].h))) return appuie_Tour4;
-                else if((event.button.x >= 197)&&(event.button.y >= 370)&&(event.button.x <= 334)&&(event.button.y <= 426)) {
+                else if((event.button.x >= 197)&&(event.button.y >= 370)&&(event.button.x <= 334)&&(event.button.y <= 426)) {               //chargement
+                    //on affiche la demande
+                    affichage();
+                    SDL_Printf("emplacement de sauvegarde :",1);
+                    SDL_Printf("Sauvegarde1",2);
                     while(while_bool){
                         if(SDL_WaitEvent(&event)){                                                                                      
-                            //on affiche la demande
-                            affichage();
-                            SDL_Printf("emplacement de sauvegarde :",1);
-                            SDL_Printf(nomFichier,2);
                             //on choisie le nom ()
                             switch(event.type){
+                                case SDL_QUIT:
+                                    ExitSDL();                                      //on ferme la SDL
+                                    exit(EXIT_SUCCESS);
+                                    break;
                                 case SDL_KEYDOWN :
                                     switch(event.key.keysym.sym){
                                     //touche fleche haut
@@ -352,19 +356,39 @@ unsigned char RecupTouche_B_SDL(void){
                             //on remplie la variable pour le nom avec celui choisie
                             switch(choixNom){
                                 case 0 :
-                                    nomFichier = "Sauvegarde1";
+                                    nomFichier = "Sauvegarde1.save";
+                                    //on affiche la demande
+                                    affichage();
+                                    SDL_Printf("emplacement de sauvegarde :",1);
+                                    SDL_Printf("Sauvegarde1",2);
                                     break;
                                 case 1 :
-                                    nomFichier = "Sauvegarde2";
+                                    nomFichier = "Sauvegarde2.save";
+                                    //on affiche la demande
+                                    affichage();
+                                    SDL_Printf("emplacement de sauvegarde :",1);
+                                    SDL_Printf("Sauvegarde2",2);
                                     break;
                                 case 2 :
-                                    nomFichier = "Sauvegarde3";
+                                    nomFichier = "Sauvegarde3.save";
+                                    //on affiche la demande
+                                    affichage();
+                                    SDL_Printf("emplacement de sauvegarde :",1);
+                                    SDL_Printf("Sauvegarde3",2);
                                     break;
                                 case 3 :
-                                    nomFichier = "Sauvegarde4";
+                                    nomFichier = "Sauvegarde4.save";
+                                    //on affiche la demande
+                                    affichage();
+                                    SDL_Printf("emplacement de sauvegarde :",1);
+                                    SDL_Printf("Sauvegarde4",2);
                                     break;
                                 case 4 :
-                                    nomFichier = "Sauvegarde5";
+                                    nomFichier = "Sauvegarde5.save";
+                                    //on affiche la demande
+                                    affichage();
+                                    SDL_Printf("emplacement de sauvegarde :",1);
+                                    SDL_Printf("Sauvegarde5",2);
                                     break;
                             } 
                         }
@@ -372,14 +396,37 @@ unsigned char RecupTouche_B_SDL(void){
                     LectureInstruction(nomFichier);                                                                                         //on regarde dans le fichier choisie
                     return chargement;
                 } else if((event.button.x >= 197)&&(event.button.y >= 286)&&(event.button.x <= 334)&&(event.button.y <= 342)) {             //sauvegarde
+                    //on affiche le warning
+                    while(while_bool && etat_courant != Resolution_Manuelle){                                                               //affichage du warning sur la sauvegarde
+                    affichage();
+                    SDL_Printf("/!\\ lors d'une sauvegarde :",1);
+                    SDL_Printf("une resolution automatique devient manuelle",2);
+                        if(SDL_WaitEvent(&event)){
+                            switch(event.type){
+                                case SDL_QUIT:
+                                    ExitSDL();                                                                                              //on ferme la SDL
+                                    exit(EXIT_SUCCESS);
+                                    break;
+                                case SDL_KEYDOWN :
+                                    case SDLK_RETURN:
+                                        while_bool = 0;
+                                        break;
+                                    break;
+                            }
+                        }
+                    }while_bool = 1;
+                    //on affiche la demande
+                    affichage();
+                    SDL_Printf("emplacement de sauvegarde :",1);
+                    SDL_Printf("Sauvegarde1",2);
                     while(while_bool){                                                                                                      //tant qu'ont a pas choisie on boucle
                         if(SDL_WaitEvent(&event)){                                                                                      
-                            //on affiche la demande
-                            affichage();
-                            SDL_Printf("emplacement de sauvegarde :",1);
-                            SDL_Printf(nomFichier,2);
                             //on choisie le nom ()
                             switch(event.type){
+                                case SDL_QUIT:
+                                    ExitSDL();                                                                                              //on ferme la SDL
+                                    exit(EXIT_SUCCESS);
+                                    break;
                                 case SDL_KEYDOWN :
                                     switch(event.key.keysym.sym){
                                     //touche fleche haut
@@ -402,19 +449,39 @@ unsigned char RecupTouche_B_SDL(void){
                             //on remplie la variable pour le nom avec celui choisie
                             switch(choixNom){
                                 case 0 :
-                                    nomFichier = "Sauvegarde1";
+                                    nomFichier = "Sauvegarde1.save";
+                                    //on affiche la demande
+                                    affichage();
+                                    SDL_Printf("emplacement de sauvegarde :",1);
+                                    SDL_Printf("Sauvegarde1",2);
                                     break;
                                 case 1 :
-                                    nomFichier = "Sauvegarde2";
+                                    nomFichier = "Sauvegarde2.save";
+                                    //on affiche la demande
+                                    affichage();
+                                    SDL_Printf("emplacement de sauvegarde :",1);
+                                    SDL_Printf("Sauvegarde2",2);
                                     break;
                                 case 2 :
-                                    nomFichier = "Sauvegarde3";
+                                    nomFichier = "Sauvegarde3.save";
+                                    //on affiche la demande
+                                    affichage();
+                                    SDL_Printf("emplacement de sauvegarde :",1);
+                                    SDL_Printf("Sauvegarde3",2);
                                     break;
                                 case 3 :
-                                    nomFichier = "Sauvegarde4";
+                                    nomFichier = "Sauvegarde4.save";
+                                    //on affiche la demande
+                                    affichage();
+                                    SDL_Printf("emplacement de sauvegarde :",1);
+                                    SDL_Printf("Sauvegarde4",2);
                                     break;
                                 case 4 :
-                                    nomFichier = "Sauvegarde5";
+                                    nomFichier = "Sauvegarde5.save";
+                                    //on affiche la demande
+                                    affichage();
+                                    SDL_Printf("emplacement de sauvegarde :",1);
+                                    SDL_Printf("Sauvegarde5",2);
                                     break;
                             } 
                         }
