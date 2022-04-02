@@ -1,10 +1,8 @@
 # MOProc_2022_G01_Mastermind
 ## Infos
-***
 Ce projet est un MasterMind qui est soit jouable par un vrai joueur <br>
 soit automatiquement résolue par l'ordinateur <br>
 ## Compilation/lancement
-***
 Pour l'installation et le lancement :
 ```
 $ git clone https://forge.univ-lyon1.fr/mo-progc/moproc_2022_g01_mastermind.git
@@ -36,7 +34,6 @@ $ gcc src/*.c -o bin/MasterMind -I include -L lib/SDL -lmingw32 -lSDL2main -lSDL
 $ gcc src/*.c -o bin/MasterMind -I include -L lib/SDL -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -mwindows
 ```
 ## Auteurs
-***
 BOLLIAND Thomas <br>
 LACOSTE Gabriel <br>
 ## Fonctionnalités
