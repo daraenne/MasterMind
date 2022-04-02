@@ -2,6 +2,7 @@
     //SDL
         #include <SDL/SDL.h>
         #include <SDL/SDL_ttf.h>
+    //natif au C
         #include <string.h>
     //nos headers
         #include <Define.h>
