@@ -14,9 +14,7 @@ $ ./bin/MasterMind
 ***
 1. Pour compiler le programme il faut en premier lieu installer GCC : <br>
 voici un lien pour installer MINGW32 si vous n'avez pas GCC, cela vous installera en prime G++ et GDB. <br>
-<a href="https://winlibs.com/">
-winlibs <br>
-</a>
+<a href="https://winlibs.com/"> winlibs <br> </a>
 
 2. Puis il faudra le mettre en variable PATH (les deux autres s'y mettront aussi automatiquement) :<br>
 décompressez MINGW puis mettez le la ou vous voulez. <br>
