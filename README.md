@@ -33,9 +33,6 @@ $ gcc src/*.c -o bin/MasterMind -I include -L lib/SDL -lmingw32 -lSDL2main -lSDL
 ```
 $ gcc src/*.c -o bin/MasterMind -I include -L lib/SDL -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -mwindows
 ```
-## Auteurs
-BOLLIAND Thomas <br>
-LACOSTE Gabriel <br>
 ## Fonctionnalités
 Comme dit plus haut ce programme lance un jeu du MasterMind. <br>
 Lors du lancement, vous aurez plusieurs choix à faire : <br>
